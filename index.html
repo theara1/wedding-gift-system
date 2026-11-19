@@ -1,0 +1,3468 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ប្រព័ន្ធកត់ត្រាចំណងដៃពិធីមង្គលការ — Wedding Gift Tracker</title>
+
+  <!-- Google Fonts: Google Sans & Noto Sans Khmer -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- SheetJS (XLSX) for Excel Import & Export -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Google Sans"', '"Noto Sans Khmer"', 'sans-serif'],
+            khmer: ['"Noto Sans Khmer"', '"Google Sans"', 'sans-serif'],
+          },
+          colors: {
+            outerBg: '#E5E6E1',
+            shellBg: '#F7F7F5',
+            ink: '#1E1F1D',
+            limeBrand: '#C7F249',
+            limeHover: '#B6E635',
+            skyTop: '#D4EAFF',
+            skyMid: '#E7F3FF',
+            skyBot: '#F4F9FF',
+          },
+          boxShadow: {
+            shell: '0 24px 60px -15px rgba(30, 31, 29, 0.12), 0 4px 16px -4px rgba(30, 31, 29, 0.05)',
+            soft: '0 4px 20px -4px rgba(30, 31, 29, 0.05), 0 1px 3px 0 rgba(30, 31, 29, 0.03)',
+            skyCard: '0 14px 34px -10px rgba(34, 102, 179, 0.14), 0 2px 8px -2px rgba(30, 31, 29, 0.04)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Global Typography Enforcement */
+    *, *::before, *::after, html, body, input, button, select, textarea, table {
+      font-family: 'Google Sans', 'Noto Sans Khmer', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Outer Architectural Dot-Matrix Backdrop */
+    body {
+      background-color: #E5E6E1;
+      background-image: radial-gradient(#C5C7BE 1.15px, transparent 1.15px);
+      background-size: 20px 20px;
+      color: #1E1F1D;
+    }
+
+    /* Tabular Figures for Clean Currency Alignment */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 3-Stop Sky-Blue Atmospheric Gradient */
+    .sky-atmospheric-card {
+      background: linear-gradient(145deg, #D4EAFF 0%, #E7F3FF 52%, #F4F9FF 100%);
+      border: 1.5px solid #B8D8FA;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #C9CCC2;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #9FA398;
+    }
+
+    /* Live Sync Pulse */
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.3); }
+    }
+    .sync-dot-live {
+      animation: livePulse 2s infinite ease-in-out;
+    }
+
+    /* Toast Entrance */
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .toast-enter {
+      animation: toastIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .editorial-icon {
+      display: inline-block;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-2 px-2 sm:py-5 sm:px-5 lg:py-7 lg:px-8 antialiased selection:bg-[#C7F249] selection:text-[#1E1F1D]">
+
+  <!-- ===================================================================== -->
+  <!-- MAIN HUDDLY-INSPIRED ROUNDED SAAS DASHBOARD SHELL (#F7F7F5)           -->
+  <!-- ===================================================================== -->
+  <div class="max-w-[1380px] mx-auto bg-[#F7F7F5] rounded-[28px] sm:rounded-[36px] border border-white/80 shadow-shell overflow-clip">
+
+    <!-- =================================================================== -->
+    <!-- TOP STICKY GLASSMORPHIC HEADER                                      -->
+    <!-- =================================================================== -->
+    <header class="sticky top-0 z-40 bg-[#F7F7F5]/85 backdrop-blur-md border-b border-[#E6E7E1] px-4 sm:px-7 py-3.5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+
+        <!-- Left: Brand Identity -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#1E1F1D] flex items-center justify-center shadow-xs shrink-0">
+            <!-- Custom Editorial Ink + Lime Brand Emblem -->
+            <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="10.5" stroke="#C7F249" stroke-width="1.75"/>
+              <path d="M16 8.5L18.1 13.9L23.5 16L18.1 18.1L16 23.5L13.9 18.1L8.5 16L13.9 13.9L16 8.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.2" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg font-bold tracking-tight text-[#1E1F1D]">កត់ចំណងដៃ</span>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#C7F249] text-[#1E1F1D]">
+                Live Sheet
+              </span>
+            </div>
+            <p class="text-[11px] text-[#666960] hidden md:block">ប្រព័ន្ធគ្រប់គ្រងចំណងដៃពិធីមង្គលការ</p>
+          </div>
+        </div>
+
+        <!-- Center: Pill Navigation Tabs -->
+        <nav aria-label="ផ្នែកសំខាន់ៗ" class="hidden xl:flex items-center gap-1 p-1.5 rounded-full bg-[#FFFFFF] border border-[#E6E7E1] shadow-2xs">
+          <button type="button" onclick="scrollToSection('overviewSection', this)" class="nav-pill px-4 py-1.5 rounded-full text-xs font-bold bg-[#1E1F1D] text-white transition-all cursor-pointer">
+            ទិដ្ឋភាពទូទៅ
+          </button>
+          <button type="button" onclick="scrollToSection('guestTableSection', this)" class="nav-pill px-4 py-1.5 rounded-full text-xs font-semibold text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer">
+            បញ្ជីភ្ញៀវ
+          </button>
+          <button type="button" onclick="scrollToSection('analyticsSection', this)" class="nav-pill px-4 py-1.5 rounded-full text-xs font-semibold text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer">
+            វិភាគទិន្នន័យ
+          </button>
+          <button type="button" onclick="scrollToSection('googleSheetCardSection', this)" class="nav-pill px-4 py-1.5 rounded-full text-xs font-semibold text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer">
+            Google Sheet
+          </button>
+        </nav>
+
+        <!-- Right: Search (⌘K), Live Sheet Pill + Auto: 5s, Manual Sync Bell & Excel Export -->
+        <div class="flex items-center gap-2 sm:gap-2.5">
+          <!-- Search Bar (⌘K) -->
+          <div class="relative hidden md:flex items-center">
+            <svg class="w-4 h-4 editorial-icon absolute left-3 text-[#666960] pointer-events-none" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="6.5" fill="#C7F249" fill-opacity="0.4" stroke="#1E1F1D" stroke-width="1.75"/>
+              <path d="M16 16L20.5 20.5" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+            </svg>
+            <input
+              id="headerSearchInput"
+              type="text"
+              placeholder="ស្វែងរកឈ្មោះភ្ញៀវ..."
+              oninput="handleGlobalSearch(this.value)"
+              class="w-48 lg:w-56 h-10 pl-9 pr-11 rounded-full bg-[#FFFFFF] border border-[#E5E6E0] focus:border-[#1E1F1D] text-xs font-medium text-[#1E1F1D] placeholder:text-[#8E9188] outline-none transition-all"
+            />
+            <kbd class="absolute right-3 px-1.5 py-0.5 rounded-md bg-[#F2F3EE] border border-[#E2E4DC] text-[10px] font-bold text-[#666960] pointer-events-none">
+              ⌘K
+            </kbd>
+          </div>
+
+          <!-- Live Google Sheet Status Pill + Auto: 5s Countdown -->
+          <div class="flex items-center rounded-full bg-[#FFFFFF] border border-[#E5E6E0] p-1 shadow-2xs">
+            <button
+              type="button"
+              onclick="openBackendModal()"
+              title="បើកការកំណត់ Google Sheet & Code.gs"
+              class="flex items-center gap-1.5 px-2.5 py-1 rounded-full hover:bg-[#F4F5F0] text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer"
+            >
+              <span id="headerSyncDot" class="w-2 h-2 rounded-full bg-[#65A30D] sync-dot-live"></span>
+              <span id="headerSyncLabel" class="hidden sm:inline">Sheet ភ្ជាប់រួច</span>
+            </button>
+            <button
+              type="button"
+              id="autoReloadPillBtn"
+              onclick="toggleAutoSync()"
+              title="ចុចដើម្បីបិទ ឬ បើក Auto-Reload រៀងរាល់ 5 វិនាទី"
+              class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#C7F249] hover:bg-[#B6E635] text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer"
+            >
+              <!-- Editorial Icon: Lime ribbon loop around directional arrow -->
+              <svg class="w-4 h-4 editorial-icon" viewBox="0 0 32 32" fill="none">
+                <path d="M8 21C4.5 18.5 4.5 12 10 9.5C15.5 7 23 9.5 25 14.5C27 19.5 21 24.5 15 23.5" stroke="#1E1F1D" stroke-width="1.85" stroke-linecap="round"/>
+                <path d="M13 13L23 17.5L18.2 19.3L16.4 24L13 13Z" fill="#1E1F1D" stroke="#1E1F1D" stroke-width="1.4" stroke-linejoin="round"/>
+              </svg>
+              <span id="autoCountdownBadge" class="tabular-nums">Auto: 5s</span>
+            </button>
+          </div>
+
+          <!-- Manual Sync Bell Button + Pending Queue Counter -->
+          <button
+            type="button"
+            id="manualSyncBtn"
+            onclick="manualSyncNow()"
+            title="ធ្វើសមកាលកម្មទិន្នន័យ Google Sheet ឥឡូវនេះ"
+            class="relative w-10 h-10 rounded-full bg-[#FFFFFF] hover:bg-[#C7F249]/50 border border-[#E5E6E0] flex items-center justify-center transition-all cursor-pointer shadow-2xs"
+          >
+            <!-- Editorial Icon: Ringing Bell with Sound Waves & Lime Clapper -->
+            <svg id="headerBellSvg" class="w-5 h-5 editorial-icon transition-transform" viewBox="0 0 32 32" fill="none">
+              <path d="M6 12C5.2 13.8 5.2 16 6 17.8" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+              <path d="M26 12C26.8 13.8 26.8 16 26 17.8" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+              <path d="M10 14C10 10.134 12.686 7 16 7C19.314 7 22 10.134 22 14V19.5L24.5 22H7.5L10 19.5V14Z" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9.5 22H22.5C22.5 23.8 19.6 25 16 25C12.4 25 9.5 23.8 9.5 22Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75" stroke-linejoin="round"/>
+              <circle cx="16" cy="5.5" r="1.5" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.5"/>
+            </svg>
+            <span
+              id="headerQueueBadge"
+              class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-amber-400 border border-[#1E1F1D] text-[10px] font-bold text-[#1E1F1D] flex items-center justify-center tabular-nums"
+            >0</span>
+          </button>
+
+          <!-- Excel Export Button -->
+          <button
+            type="button"
+            onclick="exportToExcel()"
+            title="ទាញយករបាយការណ៍ Excel (.xlsx)"
+            class="flex items-center gap-1.5 h-10 px-3.5 rounded-full bg-[#1E1F1D] hover:bg-[#31332F] text-white text-xs font-bold transition-all cursor-pointer shadow-2xs"
+          >
+            <!-- Editorial Icon: Overlapping Mountain Photo Frames -->
+            <svg class="w-4 h-4 editorial-icon" viewBox="0 0 32 32" fill="none">
+              <rect x="4" y="9" width="16" height="16" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+              <rect x="12" y="5.5" width="16" height="16" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+              <path d="M14.5 18.5L18.5 12.5L21.5 16L23.5 14L26.5 18.5H14.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+            <span class="hidden sm:inline">Excel</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- WORKSPACE BODY                                                      -->
+    <!-- =================================================================== -->
+    <div id="overviewSection" class="p-4 sm:p-6 lg:p-8 space-y-6">
+
+      <!-- ================================================================= -->
+      <!-- DIAGNOSTIC ALERT BANNER (SHOWN IF APPS SCRIPT DEPLOYMENT IS OLD)  -->
+      <!-- ================================================================= -->
+      <div id="deploymentMismatchBanner" class="hidden rounded-[22px] bg-amber-50 border-2 border-amber-400 p-4 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-400 text-[#1E1F1D] font-bold flex items-center justify-center shrink-0 mt-0.5">!</div>
+          <div class="space-y-0.5 text-xs sm:text-sm">
+            <div class="font-bold text-[#1E1F1D]">ទិន្នន័យបានរក្សាទុកក្នុងម៉ាស៊ីន ប៉ុន្តែមិនទាន់ឃើញក្នុង Google Sheet (Sheet1) ទេ!</div>
+            <p class="text-[#5E6159] text-xs leading-relaxed">
+              មូលហេតុ៖ Google Apps Script Web App របស់អ្នកអាចកំពុងប្រើកូដចាស់ ឬមិនទាន់បានបង្កើត <strong>New Deployment</strong>។ សូមចម្លងកូដ <code>Code.gs</code> ថ្មី ហើយ Deploy ជា <strong>Anyone</strong>។
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onclick="openBackendModal()"
+            class="px-4 py-2 rounded-xl bg-[#1E1F1D] hover:bg-[#31332F] text-[#C7F249] text-xs font-bold cursor-pointer"
+          >
+            បើកកូដ Code.gs ថ្មី
+          </button>
+          <button
+            type="button"
+            onclick="dismissDeploymentBanner()"
+            title="បិទការជូនដំណឹង"
+            class="w-8 h-8 rounded-xl bg-white hover:bg-amber-100 border border-amber-300 text-xs font-bold text-[#1E1F1D] flex items-center justify-center cursor-pointer"
+          >✕</button>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- GREETING BANNER (INLINE-EDITABLE COUPLE NAMES & WEDDING DATE)     -->
+      <!-- ================================================================= -->
+      <section class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="space-y-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1
+              id="coupleNamesDisplay"
+              contenteditable="true"
+              spellcheck="false"
+              onblur="saveWeddingMeta()"
+              onkeydown="handleMetaKeydown(event)"
+              title="ចុចដើម្បីកែប្រែឈ្មោះកូនកំលោះ និង កូនក្រមុំ"
+              class="text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-[#1E1F1D] outline-none focus:bg-[#C7F249]/40 focus:px-2.5 focus:rounded-xl transition-all cursor-text"
+            >
+              សុខ វិសាល &amp; ចន្ទ សុភា
+            </h1>
+            <button
+              type="button"
+              onclick="document.getElementById('coupleNamesDisplay').focus()"
+              title="កែឈ្មោះគូស្វាមីភរិយា"
+              class="p-1.5 rounded-full bg-white/80 hover:bg-[#C7F249] border border-[#E5E6E0] text-[#1E1F1D] transition-colors cursor-pointer"
+            >
+              <svg class="w-4 h-4 editorial-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M15.5 4.5L19.5 8.5L8 20H4V16L15.5 4.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap text-sm text-[#5E6159]">
+            <span
+              id="weddingDateDisplay"
+              contenteditable="true"
+              spellcheck="false"
+              onblur="saveWeddingMeta()"
+              onkeydown="handleMetaKeydown(event)"
+              title="ចុចដើម្បីកែប្រែកាលបរិច្ឆេទពិធីមង្គលការ"
+              class="font-medium outline-none focus:bg-[#C7F249]/40 focus:px-2 focus:rounded-lg transition-all cursor-text"
+            >
+              ថ្ងៃអាទិត្យ ទី២២ ខែវិច្ឆិកា ឆ្នាំ២០២៦
+            </span>
+            <span class="text-[#B4B7AE]">•</span>
+            <span class="font-medium">សរុបប៉ាន់ស្មាន: <strong id="bannerTotalUsdEq" class="text-[#1E1F1D] tabular-nums">$0.00</strong></span>
+          </div>
+        </div>
+
+        <!-- Large Touch-Friendly Action Buttons -->
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
+          <button
+            type="button"
+            onclick="openQrModal()"
+            class="flex items-center gap-2.5 h-12 px-5 rounded-full bg-[#FFFFFF] hover:bg-[#C7F249] border border-[#1E1F1D]/15 text-sm font-bold text-[#1E1F1D] shadow-soft transition-all cursor-pointer active:scale-95"
+          >
+            <!-- Editorial Icon: Hand holding green-screen phone -->
+            <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+              <rect x="11" y="4" width="12" height="20" rx="3" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+              <line x1="15.5" y1="7" x2="18.5" y2="7" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+              <rect x="14" y="10.5" width="6" height="6" rx="1" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.5"/>
+              <path d="M11 14H8.5C7.4 14 6.5 14.9 6.5 16V22.5C6.5 25.5 9 28 12.5 28H18.5C21 28 23 26 23 23.5V19" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>បង្ហាញ KHQR ស្កេន</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="focusQuickEntry()"
+            class="flex items-center gap-2 h-12 px-5 rounded-full bg-[#1E1F1D] hover:bg-[#30322E] text-white text-sm font-bold shadow-soft transition-all cursor-pointer active:scale-95"
+          >
+            <!-- Editorial Icon: Open hand receiving lime plus circle -->
+            <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+              <circle cx="17" cy="10.5" r="6" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+              <path d="M17 7.8V13.2M14.3 10.5H19.7" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+              <path d="M6 21C7.5 19 10.5 19 13 20.5H19.5C21 20.5 22 21.5 22 22.7C22 23.9 21 24.5 19.5 24.5H13.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>+ កត់ត្រាថ្មី</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- 12-COLUMN RESPONSIVE BENTO GRID (8 COLS LEFT + 4 COLS RIGHT)      -->
+      <!-- ================================================================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- =============================================================== -->
+        <!-- LEFT 8 COLUMNS: 4-STEP QUICK ENTRY + 3 KPI CARDS + GUEST TABLE  -->
+        <!-- =============================================================== -->
+        <div class="lg:col-span-8 space-y-6">
+
+          <!-- 1. 4-STEP EASY QUICK ENTRY CARD (SKY-BLUE GRADIENT) -->
+          <section id="quickEntryCard" class="sky-atmospheric-card rounded-[28px] shadow-skyCard p-5 sm:p-6 relative overflow-hidden">
+            <div class="pointer-events-none absolute -top-20 -right-20 w-56 h-56 rounded-full bg-white/45 blur-2xl"></div>
+
+            <!-- Card Header -->
+            <div class="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-5 border-b border-[#B8D8FA]/80">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-[#FFFFFF] border border-[#1E1F1D]/15 flex items-center justify-center shadow-2xs shrink-0">
+                  <!-- Editorial Icon: Lime energy canister with motion lines -->
+                  <svg class="w-7 h-7 editorial-icon" viewBox="0 0 32 32" fill="none">
+                    <line x1="16" y1="2.5" x2="16" y2="5" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <line x1="6.5" y1="6.5" x2="8.5" y2="8.5" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <line x1="25.5" y1="6.5" x2="23.5" y2="8.5" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <line x1="4" y1="16" x2="6.5" y2="16" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <line x1="25.5" y1="16" x2="28" y2="16" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <rect x="13" y="7" width="6" height="2.5" rx="1" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <rect x="10" y="9.5" width="12" height="17" rx="3" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <path d="M16.8 13.5L13.8 18H16.5L15.2 22.5L18.5 17.5H15.8L16.8 13.5Z" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.4" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h2 class="text-lg sm:text-xl font-bold text-[#1E1F1D]">កត់ត្រាចំណងដៃរហ័ស (៤ ជំហាន)</h2>
+                    <!-- Editorial Icon: Lime celebration scooter badge -->
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFFFFF] border border-[#1E1F1D]/15 text-[11px] font-bold text-[#1E1F1D]">
+                      <svg class="w-4 h-4 editorial-icon" viewBox="0 0 32 32" fill="none">
+                        <circle cx="8.5" cy="23" r="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                        <circle cx="23.5" cy="23" r="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                        <path d="M11.5 23H19.5L21 16.5H16.5L14.5 20H9.5C8.5 20 8 21 8.5 23Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75" stroke-linejoin="round"/>
+                        <path d="M21 16.5L19.5 10H22.5" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span>រក្សាទុកចូល Sheet ភ្លាមៗ</span>
+                    </span>
+                  </div>
+                  <p class="text-xs text-[#384C61]">ជ្រើសរើសងារ វាយឈ្មោះ ចុចទឹកប្រាក់ រួចចុច <strong class="text-[#1E1F1D]">Enter ↵</strong></p>
+                </div>
+              </div>
+
+              <!-- Optional Note Toggle -->
+              <button
+                type="button"
+                onclick="toggleNoteField()"
+                class="self-start sm:self-center px-3 py-1.5 rounded-full bg-[#FFFFFF]/90 hover:bg-[#FFFFFF] border border-[#B8D8FA] text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer"
+              >
+                <span id="noteToggleLabel">+ កំណត់ចំណាំ</span>
+              </button>
+            </div>
+
+            <!-- 4-Step Form -->
+            <form id="quickEntryForm" onsubmit="handleQuickSubmit(event)" class="relative space-y-4" novalidate>
+              <!-- STEP 1: GUEST NAME + KHMER HONORIFIC CHIPS -->
+              <div class="bg-[#FFFFFF]/85 backdrop-blur-xs rounded-2xl border border-[#C6E1FC] p-4 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <label for="guestNameInput" class="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#1E1F1D]">
+                    <span class="w-5 h-5 rounded-full bg-[#1E1F1D] text-[#C7F249] text-[11px] font-bold flex items-center justify-center">១</span>
+                    <span>ឈ្មោះភ្ញៀវ <span class="text-rose-600">*</span></span>
+                  </label>
+                  <span class="text-[11px] text-[#5E6159]">ចុចងារដើម្បីបំពេញរហ័ស</span>
+                </div>
+
+                <div class="relative">
+                  <input
+                    id="guestNameInput"
+                    type="text"
+                    autocomplete="off"
+                    autofocus
+                    placeholder="វាយឈ្មោះភ្ញៀវ ឬ ចុចងារខាងក្រោម..."
+                    oninput="updateClearNameVisibility()"
+                    onkeydown="handleGuestNameKeydown(event)"
+                    class="w-full h-14 pl-4 pr-11 rounded-2xl bg-[#FFFFFF] border-2 border-[#C8DFF7] focus:border-[#1E1F1D] focus:ring-4 focus:ring-[#C7F249]/45 text-base sm:text-lg font-bold text-[#1E1F1D] placeholder:text-[#8E958C] placeholder:font-normal outline-none transition-all"
+                  />
+                  <button
+                    id="clearGuestNameBtn"
+                    type="button"
+                    onclick="clearGuestNameInput()"
+                    title="សម្អាតឈ្មោះ"
+                    class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl bg-[#F2F3EE] hover:bg-[#E2E4DC] text-xs font-bold text-[#1E1F1D] flex items-center justify-center cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <!-- Quick-Insert Khmer Honorific Chips -->
+                <div class="flex flex-wrap gap-1.5 pt-0.5">
+                  <button type="button" onclick="insertHonorific('លោក')" class="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] active:scale-95 border border-[#C8DFF7] hover:border-[#1E1F1D] text-xs sm:text-sm font-bold text-[#1E1F1D] transition-all cursor-pointer">លោក</button>
+                  <button type="button" onclick="insertHonorific('លោកស្រី')" class="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] active:scale-95 border border-[#C8DFF7] hover:border-[#1E1F1D] text-xs sm:text-sm font-bold text-[#1E1F1D] transition-all cursor-pointer">លោកស្រី</button>
+                  <button type="button" onclick="insertHonorific('អ្នកនាង')" class="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] active:scale-95 border border-[#C8DFF7] hover:border-[#1E1F1D] text-xs sm:text-sm font-bold text-[#1E1F1D] transition-all cursor-pointer">អ្នកនាង</button>
+                  <button type="button" onclick="insertHonorific('កញ្ញា')" class="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] active:scale-95 border border-[#C8DFF7] hover:border-[#1E1F1D] text-xs sm:text-sm font-bold text-[#1E1F1D] transition-all cursor-pointer">កញ្ញា</button>
+                  <button type="button" onclick="insertHonorific('ឯកឧត្តម')" class="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] active:scale-95 border border-[#C8DFF7] hover:border-[#1E1F1D] text-xs sm:text-sm font-bold text-[#1E1F1D] transition-all cursor-pointer">ឯកឧត្តម</button>
+                  <button type="button" onclick="insertHonorific('លោកជំទាវ')" class="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] active:scale-95 border border-[#C8DFF7] hover:border-[#1E1F1D] text-xs sm:text-sm font-bold text-[#1E1F1D] transition-all cursor-pointer">លោកជំទាវ</button>
+                  <button type="button" onclick="insertHonorific('គ្រួសារ')" class="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] active:scale-95 border border-[#C8DFF7] hover:border-[#1E1F1D] text-xs sm:text-sm font-bold text-[#1E1F1D] transition-all cursor-pointer">គ្រួសារ</button>
+                </div>
+
+                <!-- Collapsible Note Input -->
+                <div id="optionalNoteContainer" class="hidden pt-1">
+                  <input
+                    id="guestNoteInput"
+                    type="text"
+                    placeholder="កំណត់ចំណាំបន្ថែម (ឧ. មិត្តភក្តិខាងកូនកំលោះ, តុលេខ ៣...)"
+                    class="w-full h-11 px-3.5 rounded-xl bg-[#FFFFFF] border border-[#C8DFF7] focus:border-[#1E1F1D] text-xs sm:text-sm font-medium text-[#1E1F1D] placeholder:text-[#8E958C] outline-none"
+                  />
+                </div>
+              </div>
+
+              <!-- STEP 2: PAYMENT METHOD & CURRENCY TOGGLES -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <!-- Payment Method -->
+                <div class="bg-[#FFFFFF]/85 backdrop-blur-xs rounded-2xl border border-[#C6E1FC] p-3.5 space-y-2">
+                  <div class="flex items-center gap-2 text-xs font-bold text-[#1E1F1D]">
+                    <span class="w-5 h-5 rounded-full bg-[#1E1F1D] text-[#C7F249] text-[11px] font-bold flex items-center justify-center">២</span>
+                    <span>វិធីទូទាត់</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-[#EBF4FE] border border-[#C8DFF7]">
+                    <button
+                      type="button"
+                      id="btnMethodCash"
+                      onclick="selectPaymentMethod('សាច់ប្រាក់')"
+                      class="h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-[#1E1F1D] text-white shadow-2xs transition-all cursor-pointer"
+                    >
+                      <!-- Editorial Icon: White wallet with lime coins dropping in -->
+                      <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+                        <circle cx="13" cy="6.5" r="2.5" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.6"/>
+                        <circle cx="19" cy="8.5" r="2.2" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.6"/>
+                        <rect x="5" y="11" width="22" height="15" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                        <path d="M20 16.5H27V21.5H20C18.6 21.5 17.5 20.4 17.5 19C17.5 17.6 18.6 16.5 20 16.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.6"/>
+                      </svg>
+                      <span>សាច់ប្រាក់</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      id="btnMethodQr"
+                      onclick="selectPaymentMethod('QR')"
+                      class="h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-transparent text-[#1E1F1D] hover:bg-white/75 transition-all cursor-pointer"
+                    >
+                      <!-- Editorial Icon: Hand holding green-screen phone -->
+                      <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+                        <rect x="11" y="4" width="12" height="20" rx="3" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                        <rect x="14" y="10" width="6" height="6" rx="1" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.5"/>
+                        <path d="M11 14H8.5C7.4 14 6.5 14.9 6.5 16V22.5C6.5 25.5 9 28 12.5 28H18.5C21 28 23 26 23 23.5V19" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span>ស្កេន QR</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Currency -->
+                <div class="bg-[#FFFFFF]/85 backdrop-blur-xs rounded-2xl border border-[#C6E1FC] p-3.5 space-y-2">
+                  <div class="flex items-center justify-between text-xs font-bold text-[#1E1F1D]">
+                    <span>រូបិយប័ណ្ណ</span>
+                    <button type="button" onclick="openQrModal()" class="text-[11px] font-bold underline decoration-[#C7F249] decoration-2 underline-offset-2 cursor-pointer">
+                      បើក KHQR ↗
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-[#EBF4FE] border border-[#C8DFF7]">
+                    <button
+                      type="button"
+                      id="btnCurrencyUsd"
+                      onclick="selectCurrency('USD')"
+                      class="h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-[#C7F249] text-[#1E1F1D] border border-[#1E1F1D]/20 shadow-2xs transition-all cursor-pointer"
+                    >
+                      <span class="w-6 h-6 rounded-lg bg-[#1E1F1D] text-[#C7F249] font-bold text-sm flex items-center justify-center">$</span>
+                      <span>ដុល្លារ ($)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      id="btnCurrencyKhr"
+                      onclick="selectCurrency('KHR')"
+                      class="h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-transparent text-[#1E1F1D] hover:bg-white/75 transition-all cursor-pointer"
+                    >
+                      <span class="w-6 h-6 rounded-lg bg-[#FFFFFF] border border-[#1E1F1D] text-[#1E1F1D] font-bold text-sm flex items-center justify-center">៛</span>
+                      <span>រៀល (៛)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 3: EXTRA-LARGE AMOUNT INPUT + QUICK PRESETS -->
+              <div class="bg-[#FFFFFF]/90 backdrop-blur-xs rounded-2xl border border-[#C6E1FC] p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <label for="amountInput" class="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#1E1F1D]">
+                    <span class="w-5 h-5 rounded-full bg-[#1E1F1D] text-[#C7F249] text-[11px] font-bold flex items-center justify-center">៣</span>
+                    <span>ទឹកប្រាក់ចំណងដៃ <span class="text-rose-600">*</span></span>
+                  </label>
+                  <span id="currencyBadgeHint" class="px-2.5 py-0.5 rounded-full bg-[#C7F249]/55 text-[11px] font-bold text-[#1E1F1D]">
+                    ដុល្លារ ($)
+                  </span>
+                </div>
+
+                <div class="relative flex items-center">
+                  <span
+                    id="amountSymbolPrefix"
+                    class="absolute left-5 text-3xl sm:text-4xl font-bold text-[#1E1F1D] select-none pointer-events-none"
+                  >$</span>
+                  <input
+                    id="amountInput"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    placeholder="0"
+                    oninput="handleAmountFormatting(event)"
+                    onkeydown="handleAmountKeydown(event)"
+                    class="w-full h-[72px] pl-14 pr-14 rounded-2xl bg-[#FFFFFF] border-2 border-[#1E1F1D]/25 focus:border-[#1E1F1D] focus:ring-4 focus:ring-[#C7F249]/50 text-3xl sm:text-4xl font-bold text-[#1E1F1D] tabular-nums placeholder:text-[#C5CBC0] outline-none transition-all"
+                  />
+                  <button
+                    id="clearAmountBtn"
+                    type="button"
+                    onclick="clearAmountField(true)"
+                    title="សម្អាតទឹកប្រាក់"
+                    class="hidden absolute right-4 w-10 h-10 rounded-xl bg-[#F2F3EE] hover:bg-[#E2E4DC] text-sm font-bold text-[#1E1F1D] flex items-center justify-center cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <!-- Quick-Amount Preset Pills -->
+                <div id="quickAmountPills" class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+
+              <!-- STEP 4: PROMINENT LIME SUBMIT BUTTON -->
+              <button
+                type="submit"
+                id="submitGiftButton"
+                class="w-full h-16 px-6 rounded-2xl bg-[#C7F249] hover:bg-[#B6E635] active:scale-[0.99] border-2 border-[#1E1F1D] text-[#1E1F1D] font-bold text-base sm:text-lg flex items-center justify-between gap-3 transition-all cursor-pointer shadow-soft group"
+              >
+                <span class="flex items-center gap-3">
+                  <!-- Editorial Icon: Open hand receiving lime checkmark circle -->
+                  <span class="w-10 h-10 rounded-xl bg-[#FFFFFF] border border-[#1E1F1D]/20 flex items-center justify-center shrink-0">
+                    <svg class="w-7 h-7 editorial-icon" viewBox="0 0 32 32" fill="none">
+                      <circle cx="17.5" cy="10.5" r="6.5" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                      <path d="M14.5 10.5L16.5 12.5L20.8 8.2" stroke="#1E1F1D" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M6 21C7.5 19 10.5 19 13 20.5H19.5C21 20.5 22 21.5 22 22.7C22 23.9 21 24.5 19.5 24.5H13.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  <span>កត់ត្រាចំណងដៃ</span>
+                </span>
+                <span class="px-3 py-1 rounded-xl bg-[#1E1F1D] text-[#C7F249] text-xs font-bold tracking-wide">
+                  Enter ↵
+                </span>
+              </button>
+            </form>
+          </section>
+
+          <!-- 2. THREE KPI CARDS (TOTAL USD, TOTAL KHR, TOTAL GUESTS) -->
+          <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- KPI 1: Total USD ($) with Cash vs QR Progress Bar -->
+            <div class="bg-[#FFFFFF] rounded-[24px] border border-[#E6E7E1] shadow-soft p-5 flex flex-col justify-between gap-3.5">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <span class="text-xs font-bold text-[#666960]">សរុបដុល្លារ (USD)</span>
+                  <h3 id="kpiUsdTotal" class="text-2xl sm:text-[26px] font-bold text-[#1E1F1D] tabular-nums mt-0.5">$0.00</h3>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] flex items-center justify-center shrink-0">
+                  <!-- Editorial Icon: White wallet with lime coins dropping in -->
+                  <svg class="w-7 h-7 editorial-icon" viewBox="0 0 32 32" fill="none">
+                    <circle cx="13" cy="6.5" r="2.5" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <circle cx="19.5" cy="8.5" r="2.2" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <rect x="5" y="11.5" width="22" height="14.5" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <path d="M20 16.5H27V21.5H20C18.6 21.5 17.5 20.4 17.5 19C17.5 17.6 18.6 16.5 20 16.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Cash vs QR Progress Bar -->
+              <div class="space-y-1.5">
+                <div class="w-full h-2 rounded-full bg-[#ECEEE8] overflow-hidden flex">
+                  <div id="usdCashBar" class="h-full bg-[#1E1F1D] transition-all duration-500" style="width: 50%"></div>
+                  <div id="usdQrBar" class="h-full bg-[#C7F249] transition-all duration-500" style="width: 50%"></div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] font-bold text-[#666960] tabular-nums">
+                  <span>សាច់ប្រាក់: <strong id="kpiUsdCash" class="text-[#1E1F1D]">$0</strong></span>
+                  <span>QR: <strong id="kpiUsdQr" class="text-[#1E1F1D]">$0</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- KPI 2: Total KHR (៛) with Cash vs QR Progress Bar -->
+            <div class="bg-[#FFFFFF] rounded-[24px] border border-[#E6E7E1] shadow-soft p-5 flex flex-col justify-between gap-3.5">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <span class="text-xs font-bold text-[#666960]">សរុបប្រាក់រៀល (KHR)</span>
+                  <h3 id="kpiKhrTotal" class="text-2xl sm:text-[26px] font-bold text-[#1E1F1D] tabular-nums mt-0.5">0 ៛</h3>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] flex items-center justify-center shrink-0">
+                  <!-- Editorial Icon: Bank card with ៛ 123 lime badge -->
+                  <svg class="w-7 h-7 editorial-icon" viewBox="0 0 32 32" fill="none">
+                    <rect x="4" y="8" width="21" height="14" rx="3" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <line x1="4" y1="12.5" x2="25" y2="12.5" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <rect x="14.5" y="15.5" width="13.5" height="9" rx="2.5" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <text x="21.25" y="21.8" text-anchor="middle" fill="#1E1F1D" font-size="6.5" font-weight="700">123</text>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Cash vs QR Progress Bar -->
+              <div class="space-y-1.5">
+                <div class="w-full h-2 rounded-full bg-[#ECEEE8] overflow-hidden flex">
+                  <div id="khrCashBar" class="h-full bg-[#1E1F1D] transition-all duration-500" style="width: 50%"></div>
+                  <div id="khrQrBar" class="h-full bg-[#C7F249] transition-all duration-500" style="width: 50%"></div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] font-bold text-[#666960] tabular-nums">
+                  <span>សាច់ប្រាក់: <strong id="kpiKhrCash" class="text-[#1E1F1D]">0 ៛</strong></span>
+                  <span>QR: <strong id="kpiKhrQr" class="text-[#1E1F1D]">0 ៛</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- KPI 3: Total Guests (នាក់) with Overlapping Avatar Stack -->
+            <div class="bg-[#FFFFFF] rounded-[24px] border border-[#E6E7E1] shadow-soft p-5 flex flex-col justify-between gap-3.5">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <span class="text-xs font-bold text-[#666960]">ភ្ញៀវចូលរួមសរុប</span>
+                  <h3 id="kpiGuestsTotal" class="text-2xl sm:text-[26px] font-bold text-[#1E1F1D] tabular-nums mt-0.5">0 នាក់</h3>
+                </div>
+                <!-- Overlapping Avatar Stack -->
+                <div id="guestAvatarStack" class="flex items-center -space-x-2 shrink-0">
+                  <span class="w-8 h-8 rounded-full bg-[#C7F249] border-2 border-white text-xs font-bold text-[#1E1F1D] flex items-center justify-center">ភ</span>
+                  <span class="w-8 h-8 rounded-full bg-[#1E1F1D] border-2 border-white text-xs font-bold text-white flex items-center justify-center">ម</span>
+                  <span class="w-8 h-8 rounded-full bg-[#D4EAFF] border-2 border-white text-xs font-bold text-[#1E1F1D] flex items-center justify-center">+</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t border-[#F0F1EC] text-[11px] font-bold text-[#666960] tabular-nums">
+                <span>សាច់ប្រាក់: <strong id="kpiCashGuests" class="text-[#1E1F1D]">0 នាក់</strong></span>
+                <span>ស្កេន QR: <strong id="kpiQrGuests" class="text-[#1E1F1D]">0 នាក់</strong></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. GUEST LIST TABLE WITH FILTER PILLS & LATEST ENTRY HIGHLIGHT -->
+          <section id="guestTableSection" class="bg-[#FFFFFF] rounded-[26px] border border-[#E6E7E1] shadow-soft overflow-hidden">
+            <div class="p-5 sm:p-6 border-b border-[#ECEEE8] space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] flex items-center justify-center shrink-0">
+                    <!-- Editorial Icon: Overlapping mountain photo frames -->
+                    <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+                      <rect x="4" y="9" width="16" height="16" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                      <rect x="12" y="5.5" width="16" height="16" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                      <path d="M14.5 18.5L18.5 12.5L21.5 16L23.5 14L26.5 18.5H14.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-bold text-[#1E1F1D]">បញ្ជីឈ្មោះភ្ញៀវចូលរួម</h2>
+                    <p class="text-xs text-[#666960]">ទិន្នន័យធ្វើបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិជាមួយ Google Sheet</p>
+                  </div>
+                </div>
+
+                <!-- Mobile Search Input -->
+                <div class="relative w-full sm:w-60">
+                  <svg class="w-4 h-4 editorial-icon absolute left-3 top-1/2 -translate-y-1/2 text-[#666960]" viewBox="0 0 24 24" fill="none">
+                    <circle cx="11" cy="11" r="6.5" fill="#C7F249" fill-opacity="0.4" stroke="#1E1F1D" stroke-width="1.75"/>
+                    <path d="M16 16L20.5 20.5" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                  </svg>
+                  <input
+                    id="tableSearchInput"
+                    type="text"
+                    placeholder="ស្វែងរកឈ្មោះភ្ញៀវ..."
+                    oninput="handleGlobalSearch(this.value)"
+                    class="w-full h-10 pl-9 pr-3.5 rounded-full bg-[#F7F7F5] border border-[#E5E6E0] focus:bg-[#FFFFFF] focus:border-[#1E1F1D] text-xs font-medium text-[#1E1F1D] placeholder:text-[#8E9188] outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <!-- Filter Pills with Live Count Badges -->
+              <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+                <button type="button" onclick="setTableFilter('ALL')" data-filter="ALL" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#1E1F1D] text-white transition-all cursor-pointer shrink-0">
+                  ទាំងអស់ <span id="badgeAll" class="ml-1 px-1.5 py-0.2 rounded-full bg-white/20 text-[11px] tabular-nums">0</span>
+                </button>
+                <button type="button" onclick="setTableFilter('សាច់ប្រាក់')" data-filter="សាច់ប្រាក់" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F7F7F5] text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer shrink-0">
+                  សាច់ប្រាក់ <span id="badgeCash" class="ml-1 px-1.5 py-0.2 rounded-full bg-[#E6E7E1] text-[11px] tabular-nums">0</span>
+                </button>
+                <button type="button" onclick="setTableFilter('QR')" data-filter="QR" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F7F7F5] text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer shrink-0">
+                  QR <span id="badgeQr" class="ml-1 px-1.5 py-0.2 rounded-full bg-[#E6E7E1] text-[11px] tabular-nums">0</span>
+                </button>
+                <button type="button" onclick="setTableFilter('USD')" data-filter="USD" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F7F7F5] text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer shrink-0">
+                  ដុល្លារ ($) <span id="badgeUsd" class="ml-1 px-1.5 py-0.2 rounded-full bg-[#E6E7E1] text-[11px] tabular-nums">0</span>
+                </button>
+                <button type="button" onclick="setTableFilter('KHR')" data-filter="KHR" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F7F7F5] text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer shrink-0">
+                  រៀល (៛) <span id="badgeKhr" class="ml-1 px-1.5 py-0.2 rounded-full bg-[#E6E7E1] text-[11px] tabular-nums">0</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-[#F7F7F5] border-b border-[#ECEEE8] text-[11px] font-bold uppercase tracking-wider text-[#666960]">
+                    <th class="py-3 pl-5 pr-2 w-12">#</th>
+                    <th class="py-3 px-3">ឈ្មោះភ្ញៀវ</th>
+                    <th class="py-3 px-3">ប្រភេទ</th>
+                    <th class="py-3 px-3 text-right">ទឹកប្រាក់</th>
+                    <th class="py-3 px-3 hidden sm:table-cell">កាលបរិច្ឆេទ / Sync</th>
+                    <th class="py-3 pl-2 pr-5 text-right">សកម្មភាព</th>
+                  </tr>
+                </thead>
+                <tbody id="guestTableBody" class="divide-y divide-[#F0F1EC] text-sm">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyGuestState" class="hidden py-12 px-6 text-center space-y-2.5">
+              <div class="w-14 h-14 mx-auto rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] flex items-center justify-center">
+                <svg class="w-8 h-8 editorial-icon" viewBox="0 0 32 32" fill="none">
+                  <circle cx="17.5" cy="10.5" r="6" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+                  <path d="M17.5 7.8V13.2M14.8 10.5H20.2" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                  <path d="M6 21C7.5 19 10.5 19 13 20.5H19.5C21 20.5 22 21.5 22 22.7C22 23.9 21 24.5 19.5 24.5H13.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h4 class="text-sm sm:text-base font-bold text-[#1E1F1D]">មិនទាន់មានទិន្នន័យភ្ញៀវនៅឡើយទេ</h4>
+              <p class="text-xs text-[#666960] max-w-sm mx-auto">សូមបញ្ចូលឈ្មោះភ្ញៀវ និង ទឹកប្រាក់នៅផ្ទាំងខាងលើ ដើម្បីចាប់ផ្តើមកត់ត្រា។</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- RIGHT 4 COLUMNS: ANALYTICS DONUT + EXCEL CARD + SHEET SYNC CARD -->
+        <!-- =============================================================== -->
+        <aside class="lg:col-span-4 space-y-6">
+
+          <!-- 1. ANALYTICS CARD: SVG DONUT CHART (CASH vs QR) -->
+          <div id="analyticsSection" class="bg-[#FFFFFF] rounded-[26px] border border-[#E6E7E1] shadow-soft p-5 sm:p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] flex items-center justify-center shrink-0">
+                  <!-- Editorial Icon: Lime ribbon loop around arrow -->
+                  <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+                    <path d="M8 21C4.5 18.5 4.5 12 10 9.5C15.5 7 23 9.5 25 14.5C27 19.5 21 24.5 15 23.5" stroke="#C7F249" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M8 21C4.5 18.5 4.5 12 10 9.5C15.5 7 23 9.5 25 14.5C27 19.5 21 24.5 15 23.5" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <path d="M13 13L23 17.5L18.2 19.3L16.4 24L13 13Z" fill="#1E1F1D" stroke="#1E1F1D" stroke-width="1.5" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-[#1E1F1D]">វិភាគទិន្នន័យចំណងដៃ</h3>
+                  <p class="text-xs text-[#666960]">សមាមាត្រ សាច់ប្រាក់ vs ស្កេន QR</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- SVG Donut -->
+            <div class="relative flex items-center justify-center py-2">
+              <svg class="w-44 h-44 -rotate-90" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="56" fill="none" stroke="#F0F1EC" stroke-width="20" />
+                <circle
+                  id="donutCashSegment"
+                  cx="80"
+                  cy="80"
+                  r="56"
+                  fill="none"
+                  stroke="#1E1F1D"
+                  stroke-width="20"
+                  stroke-dasharray="0 351.86"
+                  stroke-linecap="round"
+                  class="transition-all duration-500"
+                />
+                <circle
+                  id="donutQrSegment"
+                  cx="80"
+                  cy="80"
+                  r="56"
+                  fill="none"
+                  stroke="#C7F249"
+                  stroke-width="20"
+                  stroke-dasharray="0 351.86"
+                  stroke-dashoffset="0"
+                  stroke-linecap="round"
+                  class="transition-all duration-500"
+                />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                <span class="text-[11px] font-bold text-[#666960]">ភ្ញៀវសរុប</span>
+                <span id="donutTotalGuests" class="text-2xl font-bold text-[#1E1F1D] tabular-nums">0</span>
+                <span class="text-[11px] text-[#666960]">នាក់</span>
+              </div>
+            </div>
+
+            <!-- Breakdown Rows -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between p-3 rounded-2xl bg-[#F7F7F5] border border-[#ECEEE8]">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#1E1F1D]"></span>
+                  <span class="text-xs font-bold text-[#1E1F1D]">សាច់ប្រាក់ (Cash)</span>
+                </div>
+                <span id="donutCashLabel" class="text-xs font-bold text-[#1E1F1D] tabular-nums">0% (0 នាក់)</span>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-2xl bg-[#F7F7F5] border border-[#ECEEE8]">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#C7F249] ring-1 ring-[#1E1F1D]"></span>
+                  <span class="text-xs font-bold text-[#1E1F1D]">ស្កេន QR (KHQR)</span>
+                </div>
+                <span id="donutQrLabel" class="text-xs font-bold text-[#1E1F1D] tabular-nums">0% (0 នាក់)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. EXCEL (.XLSX) IMPORT & EXPORT CARD -->
+          <div class="bg-[#FFFFFF] rounded-[26px] border border-[#E6E7E1] shadow-soft p-5 sm:p-6 space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] flex items-center justify-center shrink-0">
+                <!-- Editorial Icon: Overlapping mountain photo frames -->
+                <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+                  <rect x="4" y="9" width="16" height="16" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                  <rect x="12" y="5.5" width="16" height="16" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+                  <path d="M14.5 18.5L18.5 12.5L21.5 16L23.5 14L26.5 18.5H14.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.5" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-[#1E1F1D]">ឯកសារ Excel (.xlsx)</h3>
+                <p class="text-xs text-[#666960]">នាំចេញតារាងបូកសរុប USD/KHR ឬ នាំចូលបញ្ជី</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <input type="file" id="excelImportInput" accept=".xlsx,.xls,.csv" onchange="handleExcelImport(event)" class="hidden" />
+              <button
+                type="button"
+                onclick="document.getElementById('excelImportInput').click()"
+                class="h-11 px-3 rounded-2xl bg-[#F7F7F5] hover:bg-[#ECEEE8] border border-[#E6E7E1] text-xs font-bold text-[#1E1F1D] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <span>↑ នាំចូល Excel</span>
+              </button>
+              <button
+                type="button"
+                onclick="exportToExcel()"
+                class="h-11 px-3 rounded-2xl bg-[#C7F249] hover:bg-[#B6E635] border border-[#1E1F1D]/15 text-xs font-bold text-[#1E1F1D] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <span>↓ នាំចេញ Excel</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. GOOGLE SHEET REAL-TIME SYNC CARD (SKY-BLUE GRADIENT) -->
+          <div id="googleSheetCardSection" class="sky-atmospheric-card rounded-[26px] shadow-skyCard p-5 sm:p-6 space-y-4">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-[#FFFFFF] border border-[#1E1F1D]/15 flex items-center justify-center shrink-0">
+                  <!-- Editorial Icon: Ringing Bell with Sound Waves -->
+                  <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+                    <path d="M6 12C5.2 13.8 5.2 16 6 17.8" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <path d="M26 12C26.8 13.8 26.8 16 26 17.8" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round"/>
+                    <path d="M10 14C10 10.134 12.686 7 16 7C19.314 7 22 10.134 22 14V19.5L24.5 22H7.5L10 19.5V14Z" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.5 22H22.5C22.5 23.8 19.6 25 16 25C12.4 25 9.5 23.8 9.5 22Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="text-base font-bold text-[#1E1F1D]">Google Sheet Sync</h3>
+                  <div class="flex items-center gap-1.5 text-[11px] font-medium text-[#384C61]">
+                    <span class="truncate">test-1 • Sheet1 (A–G)</span>
+                    <a
+                      href="https://docs.google.com/spreadsheets/d/10JSUA_er-tnyzaTiSTyPq0b8Ovkwt77mT9GJ1HGVKDo/edit?gid=0#gid=0"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="បើកឯកសារ Google Sheet test-1"
+                      class="shrink-0 font-bold text-[#1E1F1D] underline decoration-[#C7F249] decoration-2"
+                    >បើក ↗</a>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onclick="toggleAutoSync()"
+                id="cardAutoToggleBtn"
+                class="px-3 py-1 rounded-full bg-[#C7F249] border border-[#1E1F1D]/15 text-[11px] font-bold text-[#1E1F1D] cursor-pointer shrink-0"
+              >
+                Auto: 5s ON
+              </button>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-[#FFFFFF]/85 border border-[#C6E1FC] space-y-1 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-[#5E6159]">ស្ថានភាពតភ្ជាប់:</span>
+                <span id="cardConnectionStatus" class="font-bold text-[#3F7D12]">● បានតភ្ជាប់រួចរាល់</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-[#5E6159]">ធ្វើបច្ចុប្បន្នភាពចុងក្រោយ:</span>
+                <span id="cardLastSyncTime" class="font-bold text-[#1E1F1D] tabular-nums">--:--:--</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-[#5E6159]">Queue រង់ចាំបញ្ជូន:</span>
+                <span id="cardQueueCount" class="font-bold text-[#1E1F1D] tabular-nums">0</span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <button
+                type="button"
+                id="retrySyncNowBtn"
+                onclick="retrySyncNow()"
+                class="w-full h-11 px-3 rounded-2xl bg-[#C7F249] hover:bg-[#B6E635] border border-[#1E1F1D]/20 text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer"
+              >
+                បញ្ជូនឡើងវិញឥឡូវនេះ (Retry Sync)
+              </button>
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onclick="manualSyncNow()"
+                  class="h-10 px-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#F7F8F5] border border-[#B8D8FA] text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer"
+                >
+                  ទាញទិន្នន័យឥឡូវ
+                </button>
+                <button
+                  type="button"
+                  onclick="openBackendModal()"
+                  class="h-10 px-3 rounded-2xl bg-[#1E1F1D] hover:bg-[#31332F] text-white text-xs font-bold transition-colors cursor-pointer"
+                >
+                  កូដ Backend (Code.gs)
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: ABA' KHQR MODAL (#qrModal) — SOTHEARA NANG                   -->
+  <!-- ===================================================================== -->
+  <div id="qrModal" class="hidden fixed inset-0 z-50 bg-[#1E1F1D]/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-[#FFFFFF] rounded-[28px] border border-[#E6E7E1] shadow-shell max-w-md w-full overflow-hidden">
+      <div class="px-6 py-4 border-b border-[#ECEEE8] flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+            <rect x="11" y="4" width="12" height="20" rx="3" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+            <rect x="14" y="10" width="6" height="6" rx="1" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.5"/>
+            <path d="M11 14H8.5C7.4 14 6.5 14.9 6.5 16V22.5C6.5 25.5 9 28 12.5 28H18.5C21 28 23 26 23 23.5V19" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="text-base sm:text-lg font-bold text-[#1E1F1D]">ABA' QR / KHQR ស្កេនចំណងដៃ</h3>
+        </div>
+        <button type="button" onclick="closeQrModal()" class="w-9 h-9 rounded-full bg-[#F7F7F5] hover:bg-[#ECEEE8] font-bold text-[#1E1F1D] flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-6 space-y-5">
+        <!-- Authentic ABA' KHQR Card -->
+        <div class="mx-auto max-w-[290px] rounded-[24px] bg-[#FFFFFF] border-2 border-[#1E1F1D] shadow-soft overflow-hidden">
+          <div class="bg-[#E1232E] py-3 px-5 flex items-center justify-center relative">
+            <span class="text-white font-bold tracking-widest text-lg">KHQR</span>
+            <div class="absolute right-0 bottom-0 w-0 h-0 border-l-[18px] border-l-transparent border-b-[18px] border-b-white"></div>
+          </div>
+
+          <div class="px-6 pt-4 pb-2.5 text-left border-b border-dashed border-[#D8DCD2]">
+            <div class="text-xs font-bold text-[#666960] uppercase tracking-wide">ABA' QR Merchant</div>
+            <div class="text-lg font-bold text-[#1E1F1D] mt-0.5">SOTHEARA NANG</div>
+          </div>
+
+          <!-- QR Graphic (Custom Image or Vector ABA KHQR) -->
+          <div class="p-5 flex items-center justify-center bg-white">
+            <img id="customQrPreviewImg" alt="Custom KHQR" class="hidden w-48 h-48 object-contain rounded-xl" />
+            <div id="defaultAbaQrSvg" class="w-48 h-48 flex items-center justify-center">
+              <svg class="w-full h-full" viewBox="0 0 200 200" fill="none">
+                <rect width="200" height="200" rx="12" fill="#FFFFFF"/>
+                <rect x="16" y="16" width="48" height="48" rx="8" stroke="#1E1F1D" stroke-width="8"/>
+                <rect x="30" y="30" width="20" height="20" rx="3" fill="#1E1F1D"/>
+                <rect x="136" y="16" width="48" height="48" rx="8" stroke="#1E1F1D" stroke-width="8"/>
+                <rect x="150" y="30" width="20" height="20" rx="3" fill="#1E1F1D"/>
+                <rect x="16" y="136" width="48" height="48" rx="8" stroke="#1E1F1D" stroke-width="8"/>
+                <rect x="30" y="150" width="20" height="20" rx="3" fill="#1E1F1D"/>
+                <rect x="78" y="20" width="10" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="96" y="20" width="10" height="22" rx="2" fill="#1E1F1D"/>
+                <rect x="114" y="32" width="10" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="78" y="48" width="22" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="20" y="78" width="22" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="52" y="78" width="10" height="22" rx="2" fill="#1E1F1D"/>
+                <rect x="20" y="102" width="10" height="20" rx="2" fill="#1E1F1D"/>
+                <rect x="40" y="112" width="22" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="138" y="78" width="10" height="22" rx="2" fill="#1E1F1D"/>
+                <rect x="158" y="78" width="24" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="172" y="98" width="10" height="24" rx="2" fill="#1E1F1D"/>
+                <rect x="140" y="114" width="22" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="78" y="140" width="10" height="24" rx="2" fill="#1E1F1D"/>
+                <rect x="98" y="140" width="24" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="134" y="140" width="18" height="18" rx="3" fill="#1E1F1D"/>
+                <rect x="164" y="140" width="18" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="98" y="164" width="10" height="18" rx="2" fill="#1E1F1D"/>
+                <rect x="120" y="172" width="26" height="10" rx="2" fill="#1E1F1D"/>
+                <rect x="158" y="162" width="24" height="20" rx="3" fill="#1E1F1D"/>
+                <circle cx="100" cy="100" r="22" fill="#1E1F1D" stroke="#FFFFFF" stroke-width="4"/>
+                <text x="100" y="106" text-anchor="middle" fill="#C7F249" font-size="14" font-weight="700">ABA</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1-Click Copy Account Numbers -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1]">
+            <div>
+              <div class="text-[11px] font-bold text-[#666960]">KHR account (ប្រាក់រៀល)</div>
+              <div class="text-base font-bold text-[#1E1F1D] tabular-nums">019 835 186</div>
+            </div>
+            <button
+              type="button"
+              onclick="copyTextToClipboard('019835186', 'លេខគណនី KHR: 019 835 186')"
+              class="px-3.5 py-2 rounded-xl bg-[#C7F249] hover:bg-[#B6E635] text-xs font-bold text-[#1E1F1D] cursor-pointer"
+            >
+              ចម្លង KHR
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1]">
+            <div>
+              <div class="text-[11px] font-bold text-[#666960]">USD account (ប្រាក់ដុល្លារ)</div>
+              <div class="text-base font-bold text-[#1E1F1D] tabular-nums">017 206 282</div>
+            </div>
+            <button
+              type="button"
+              onclick="copyTextToClipboard('017206282', 'លេខគណនី USD: 017 206 282')"
+              class="px-3.5 py-2 rounded-xl bg-[#1E1F1D] hover:bg-[#31332F] text-xs font-bold text-white cursor-pointer"
+            >
+              ចម្លង USD
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Custom QR / Reset to Default -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <input type="file" id="customQrFileInput" accept="image/*" onchange="handleQrFileUpload(event)" class="hidden" />
+          <button
+            type="button"
+            onclick="document.getElementById('customQrFileInput').click()"
+            class="py-2.5 px-3 rounded-xl bg-[#F7F7F5] hover:bg-[#ECEEE8] border border-[#E6E7E1] text-xs font-bold text-[#1E1F1D] cursor-pointer"
+          >
+            បញ្ចូលរូប QR ផ្ទាល់ខ្លួន
+          </button>
+          <button
+            type="button"
+            onclick="resetDefaultQr()"
+            class="py-2.5 px-3 rounded-xl bg-[#F7F7F5] hover:bg-[#ECEEE8] border border-[#E6E7E1] text-xs font-bold text-[#666960] hover:text-[#1E1F1D] cursor-pointer"
+          >
+            ត្រឡប់ទៅ ABA QR ដើម
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: EDIT GUEST RECORD MODAL                                      -->
+  <!-- ===================================================================== -->
+  <div id="editGuestModal" class="hidden fixed inset-0 z-50 bg-[#1E1F1D]/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-[#FFFFFF] rounded-[28px] border border-[#E6E7E1] shadow-shell max-w-md w-full overflow-hidden">
+      <div class="px-6 py-4 border-b border-[#ECEEE8] flex items-center justify-between">
+        <h3 class="text-base sm:text-lg font-bold text-[#1E1F1D]">កែសម្រួលទិន្នន័យភ្ញៀវ</h3>
+        <button type="button" onclick="closeEditGuestModal()" class="w-9 h-9 rounded-full bg-[#F7F7F5] hover:bg-[#ECEEE8] font-bold text-[#1E1F1D] flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <form onsubmit="submitEditGuest(event)" class="p-6 space-y-4">
+        <input type="hidden" id="editRecordId" />
+        <div>
+          <label class="block text-xs font-bold text-[#666960] mb-1.5">ឈ្មោះភ្ញៀវ</label>
+          <input id="editRecordName" type="text" required class="w-full h-12 px-4 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] focus:bg-white focus:border-[#1E1F1D] text-base font-bold outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#666960] mb-1.5">ប្រភេទប្រតិបត្តិការ</label>
+            <select id="editRecordMethod" class="w-full h-12 px-3 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] focus:border-[#1E1F1D] text-sm font-bold outline-none">
+              <option value="សាច់ប្រាក់">សាច់ប្រាក់</option>
+              <option value="QR">ស្កេន QR</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#666960] mb-1.5">រូបិយប័ណ្ណ</label>
+            <select id="editRecordCurrency" class="w-full h-12 px-3 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] focus:border-[#1E1F1D] text-sm font-bold outline-none">
+              <option value="USD">ដុល្លារ ($)</option>
+              <option value="KHR">រៀល (៛)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#666960] mb-1.5">ទឹកប្រាក់</label>
+          <input id="editRecordAmount" type="number" step="any" min="1" required class="w-full h-12 px-4 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] focus:bg-white focus:border-[#1E1F1D] text-lg font-bold tabular-nums outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#666960] mb-1.5">កំណត់ចំណាំ</label>
+          <input id="editRecordNote" type="text" class="w-full h-11 px-4 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] focus:bg-white focus:border-[#1E1F1D] text-sm font-medium outline-none" />
+        </div>
+
+        <div class="pt-2 flex items-center gap-2.5">
+          <button type="button" onclick="closeEditGuestModal()" class="flex-1 h-12 rounded-2xl bg-[#F7F7F5] hover:bg-[#ECEEE8] text-sm font-bold text-[#1E1F1D] cursor-pointer">
+            បោះបង់
+          </button>
+          <button type="submit" class="flex-1 h-12 rounded-2xl bg-[#C7F249] hover:bg-[#B6E635] border border-[#1E1F1D] text-[#1E1F1D] text-sm font-bold cursor-pointer">
+            រក្សាទុកការកែប្រែ
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: GOOGLE APPS SCRIPT BACKEND & CODE.GS MODAL (#backendModal)   -->
+  <!-- ===================================================================== -->
+  <div id="backendModal" class="hidden fixed inset-0 z-50 bg-[#1E1F1D]/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-[#FFFFFF] rounded-[28px] border border-[#E6E7E1] shadow-shell max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b border-[#ECEEE8] flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#C7F249] border border-[#1E1F1D]/15 flex items-center justify-center">
+            <svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+              <path d="M10 14C10 10.134 12.686 7 16 7C19.314 7 22 10.134 22 14V19.5L24.5 22H7.5L10 19.5V14Z" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75"/>
+              <path d="M9.5 22H22.5C22.5 23.8 19.6 25 16 25C12.4 25 9.5 23.8 9.5 22Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-[#1E1F1D]">ការតភ្ជាប់ Google Apps Script Backend</h3>
+            <p class="text-xs text-[#666960]">File: <code class="font-mono font-bold text-[#1E1F1D]">test-1 / Sheet1</code> • Columns: <code class="font-mono text-[#1E1F1D]">ល.រ | ឈ្មោះអ្នកចូលរួម | ទឹកប្រាក់ ($) | ទឹកប្រាក់ (៛) | ប្រតិបត្តិការ | ម៉ោងកត់ត្រា | ID</code></p>
+          </div>
+        </div>
+        <button type="button" onclick="closeBackendModal()" class="w-9 h-9 rounded-full bg-[#F7F7F5] hover:bg-[#ECEEE8] font-bold text-[#1E1F1D] flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5 text-sm">
+        <!-- Direct Google Sheet Link -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1]">
+          <div class="space-y-0.5 min-w-0">
+            <div class="text-xs font-bold text-[#1E1F1D]">តារាងទិន្នន័យ Google Sheet ផ្ទាល់ (test-1 / Sheet1)</div>
+            <div class="text-xs text-[#666960] truncate">https://docs.google.com/spreadsheets/d/10JSUA_er-tnyzaTiSTyPq0b8Ovkwt77mT9GJ1HGVKDo/edit?gid=0#gid=0</div>
+          </div>
+          <a
+            href="https://docs.google.com/spreadsheets/d/10JSUA_er-tnyzaTiSTyPq0b8Ovkwt77mT9GJ1HGVKDo/edit?gid=0#gid=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] border border-[#1E1F1D]/20 text-xs font-bold text-[#1E1F1D] shrink-0 text-center transition-colors"
+          >
+            បើក Sheet test-1 ↗
+          </a>
+        </div>
+
+        <!-- Step-by-step setup guide for test-1 -->
+        <div class="p-3.5 rounded-2xl bg-[#E7F3FF] border border-[#B8D8FA] text-xs text-[#1E1F1D] space-y-1">
+          <div class="font-bold">របៀបភ្ជាប់ Web App URL ថ្មីសម្រាប់ឯកសារ <span class="underline">test-1</span>៖</div>
+          <p class="text-[#384C61] leading-relaxed">
+            ១. បើកឯកសារ <strong>test-1</strong> រួចចុច <strong>Extensions &rarr; Apps Script</strong> &rarr; ចម្លងកូដ <code>Code.gs</code> ខាងក្រោមទៅបិទភ្ជាប់។<br/>
+            ២. ចុច <strong>Deploy &rarr; New deployment &rarr; Web app</strong> (Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>) រួចចម្លងតំណ <code>.../exec</code> ថ្មីមកបិទភ្ជាប់ខាងក្រោម។
+          </p>
+        </div>
+
+        <!-- Web App URL Configuration -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label for="backendUrlInput" class="text-xs font-bold text-[#1E1F1D]">Google Apps Script Web App URL (សម្រាប់ test-1)</label>
+            <button
+              type="button"
+              onclick="resetDefaultGasUrl()"
+              class="text-xs font-bold text-[#1E1F1D] underline decoration-[#C7F249] decoration-2 cursor-pointer"
+            >
+              កំណត់ទៅ URL ដើម (Reset Default)
+            </button>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input
+              id="backendUrlInput"
+              type="url"
+              placeholder="បិទភ្ជាប់តំណ https://script.google.com/macros/s/.../exec នៅទីនេះ"
+              class="flex-1 h-11 px-3.5 rounded-xl bg-[#F7F7F5] border border-[#E6E7E1] focus:bg-white focus:border-[#1E1F1D] text-xs font-mono text-[#1E1F1D] outline-none"
+            />
+            <button
+              type="button"
+              onclick="saveCustomGasUrl()"
+              class="h-11 px-4 rounded-xl bg-[#1E1F1D] hover:bg-[#31332F] text-white text-xs font-bold cursor-pointer shrink-0"
+            >
+              រក្សាទុក &amp; តេស្ត URL
+            </button>
+          </div>
+        </div>
+
+        <!-- Test Connection, Init Headers & Sync All Action Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <button
+            type="button"
+            id="testConnectionBtn"
+            onclick="testBackendConnection()"
+            class="h-12 px-3 rounded-2xl bg-[#C7F249] hover:bg-[#B6E635] border border-[#1E1F1D]/20 text-xs font-bold text-[#1E1F1D] flex items-center justify-center text-center cursor-pointer"
+          >
+            <span>តេស្តការតភ្ជាប់ (Test Read/Write)</span>
+          </button>
+
+          <button
+            type="button"
+            id="initSheetBtn"
+            onclick="initSheetHeaders()"
+            class="h-12 px-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#F2F3EE] border border-[#1E1F1D]/20 text-xs font-bold text-[#1E1F1D] flex items-center justify-center text-center cursor-pointer"
+          >
+            <span>បង្កើតក្បាលតារាង (Init Sheet1)</span>
+          </button>
+
+          <button
+            type="button"
+            id="syncAllBtn"
+            onclick="syncAllRecordsToSheet()"
+            class="h-12 px-3 rounded-2xl bg-[#1E1F1D] hover:bg-[#31332F] text-white text-xs font-bold flex items-center justify-center text-center cursor-pointer"
+          >
+            <span>បញ្ជូនទិន្នន័យទាំងអស់ (Sync All)</span>
+          </button>
+        </div>
+
+        <!-- Real-Time Diagnostic Output Box -->
+        <div id="diagnosticPanel" class="hidden p-4 rounded-2xl bg-[#F7F7F5] border border-[#E6E7E1] space-y-1.5 text-xs">
+          <div class="font-bold text-[#1E1F1D]" id="diagTitle">លទ្ធផលតេស្តការតភ្ជាប់:</div>
+          <div class="grid grid-cols-3 gap-2 pt-1 tabular-nums">
+            <div class="p-2 rounded-xl bg-white border border-[#E6E7E1]">
+              <div class="text-[10px] text-[#666960]">HTTP Status</div>
+              <div id="diagStatus" class="font-bold text-[#1E1F1D]">--</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white border border-[#E6E7E1]">
+              <div class="text-[10px] text-[#666960]">ល្បឿនឆ្លើយតប</div>
+              <div id="diagLatency" class="font-bold text-[#1E1F1D]">-- ms</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white border border-[#E6E7E1]">
+              <div class="text-[10px] text-[#666960]">ចំនួនជួរក្នុង Sheet1</div>
+              <div id="diagRows" class="font-bold text-[#1E1F1D]">--</div>
+            </div>
+          </div>
+          <p id="diagMessage" class="text-[11px] text-[#5E6159] pt-1 leading-relaxed"></p>
+        </div>
+
+        <!-- Production-Ready Code.gs Snippet bound to Spreadsheet ID 10JSUA_er-tnyzaTiSTyPq0b8Ovkwt77mT9GJ1HGVKDo -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-[#1E1F1D]">កូដ Google Apps Script (Code.gs) សម្រាប់ឯកសារ test-1 / Sheet1</span>
+            <button
+              type="button"
+              onclick="copyCodeGsSnippet()"
+              class="px-3.5 py-1.5 rounded-xl bg-[#C7F249] hover:bg-[#B6E635] text-xs font-bold text-[#1E1F1D] cursor-pointer"
+            >
+              ចម្លងកូដ Code.gs
+            </button>
+          </div>
+          <pre id="codeGsSource" class="p-4 rounded-2xl bg-[#1E1F1D] text-[#E6F4D0] text-[11px] font-mono overflow-x-auto leading-relaxed">const SPREADSHEET_ID = '10JSUA_er-tnyzaTiSTyPq0b8Ovkwt77mT9GJ1HGVKDo';
+const SHEET_NAME = 'Sheet1';
+const HEADERS = ['ល.រ', 'ឈ្មោះអ្នកចូលរួម', 'ទឹកប្រាក់ ($)', 'ទឹកប្រាក់ (៛)', 'ប្រតិបត្តិការ', 'ម៉ោងកត់ត្រា', 'ID'];
+
+function getTargetSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
+  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(HEADERS);
+    const headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#C7F249');
+    headerRange.setFontColor('#1E1F1D');
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function jsonOut_(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function renumberSerials_(sheet) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow &lt;= 1) return;
+  const serials = [];
+  for (let i = 1; i &lt;= lastRow - 1; i++) {
+    serials.push([i]);
+  }
+  sheet.getRange(2, 1, serials.length, 1).setValues(serials);
+}
+
+function doGet(e) {
+  return handleRequest(e);
+}
+
+function doPost(e) {
+  return handleRequest(e);
+}
+
+function handleRequest(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const sheet = getTargetSheet_();
+    const params = (e &amp;&amp; e.parameter) ? e.parameter : {};
+    let body = {};
+    if (e &amp;&amp; e.postData &amp;&amp; e.postData.contents) {
+      try {
+        body = JSON.parse(e.postData.contents);
+      } catch (parseErr) {
+        body = {};
+      }
+    }
+
+    const action = String(body.action || params.action || 'read').toLowerCase();
+    const rec = body.record || body;
+
+    if (action === 'init') {
+      return jsonOut_({
+        status: 'ok',
+        action: 'init',
+        spreadsheetId: SPREADSHEET_ID,
+        sheetName: sheet.getName(),
+        headers: HEADERS
+      });
+    }
+
+    if (action === 'read') {
+      const values = sheet.getDataRange().getValues();
+      if (values.length &lt;= 1) {
+        return jsonOut_({
+          status: 'ok',
+          spreadsheetId: SPREADSHEET_ID,
+          sheetName: sheet.getName(),
+          records: []
+        });
+      }
+      const headers = values[0].map(String);
+      const records = [];
+      for (let i = 1; i &lt; values.length; i++) {
+        const row = values[i];
+        if (!row[1] &amp;&amp; !row[6]) continue;
+        const item = {};
+        headers.forEach((h, idx) => { item[h] = row[idx]; });
+        records.push(item);
+      }
+      return jsonOut_({
+        status: 'ok',
+        spreadsheetId: SPREADSHEET_ID,
+        sheetName: sheet.getName(),
+        records: records
+      });
+    }
+
+    if (action === 'sync_all' &amp;&amp; Array.isArray(body.records)) {
+      sheet.clearContents();
+      sheet.appendRow(HEADERS);
+      const headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
+      headerRange.setFontWeight('bold');
+      headerRange.setBackground('#C7F249');
+      headerRange.setFontColor('#1E1F1D');
+      sheet.setFrozenRows(1);
+
+      const rows = body.records.map((r, idx) => {
+        const curr = String(r.currency || 'USD').toUpperCase();
+        const amt = Number(r.amount || 0);
+        const usd = r.usd !== undefined ? Number(r.usd) : (curr === 'USD' ? amt : 0);
+        const khr = r.khr !== undefined ? Number(r.khr) : (curr === 'KHR' ? amt : 0);
+        return [
+          idx + 1,
+          r['ឈ្មោះអ្នកចូលរួម'] || r.name || '',
+          usd,
+          khr,
+          r['ប្រតិបត្តិការ'] || r.method || 'សាច់ប្រាក់',
+          r['ម៉ោងកត់ត្រា'] || r.timestamp || r.date || '',
+          r['ID'] || r.id || Utilities.getUuid()
+        ];
+      });
+      if (rows.length &gt; 0) {
+        sheet.getRange(2, 1, rows.length, HEADERS.length).setValues(rows);
+      }
+      return jsonOut_({ status: 'ok', action: 'sync_all', count: rows.length });
+    }
+
+    if (action === 'add') {
+      const id = String(rec['ID'] || rec.id || params.id || Utilities.getUuid());
+      const name = String(rec['ឈ្មោះអ្នកចូលរួម'] || rec.name || params.name || '').trim();
+      const curr = String(rec.currency || params.currency || 'USD').toUpperCase();
+      const amt = Number(rec.amount || params.amount || 0);
+      const usd = (rec['ទឹកប្រាក់ ($)'] !== undefined || rec.usd !== undefined || params.usd !== undefined)
+        ? Number(rec['ទឹកប្រាក់ ($)'] ?? rec.usd ?? params.usd ?? 0)
+        : (curr === 'USD' ? amt : 0);
+      const khr = (rec['ទឹកប្រាក់ (៛)'] !== undefined || rec.khr !== undefined || params.khr !== undefined)
+        ? Number(rec['ទឹកប្រាក់ (៛)'] ?? rec.khr ?? params.khr ?? 0)
+        : (curr === 'KHR' ? amt : 0);
+      const method = String(rec['ប្រតិបត្តិការ'] || rec.method || params.method || 'សាច់ប្រាក់');
+      const ts = String(rec['ម៉ោងកត់ត្រា'] || rec.timestamp || rec.date || params.timestamp || '');
+
+      const existing = sheet.getDataRange().getValues();
+      for (let i = 1; i &lt; existing.length; i++) {
+        if (String(existing[i][6]) === id) {
+          return jsonOut_({ status: 'ok', action: 'add', duplicate: true, id: id });
+        }
+      }
+
+      const nextSerial = Math.max(1, sheet.getLastRow());
+      sheet.appendRow([nextSerial, name, usd, khr, method, ts, id]);
+      return jsonOut_({ status: 'ok', action: 'add', id: id, rowNumber: nextSerial });
+    }
+
+    if (action === 'update') {
+      const targetId = String(rec['ID'] || rec.id || params.id || '');
+      const name = String(rec['ឈ្មោះអ្នកចូលរួម'] || rec.name || params.name || '').trim();
+      const curr = String(rec.currency || params.currency || 'USD').toUpperCase();
+      const amt = Number(rec.amount || params.amount || 0);
+      const usd = (rec['ទឹកប្រាក់ ($)'] !== undefined || rec.usd !== undefined || params.usd !== undefined)
+        ? Number(rec['ទឹកប្រាក់ ($)'] ?? rec.usd ?? params.usd ?? 0)
+        : (curr === 'USD' ? amt : 0);
+      const khr = (rec['ទឹកប្រាក់ (៛)'] !== undefined || rec.khr !== undefined || params.khr !== undefined)
+        ? Number(rec['ទឹកប្រាក់ (៛)'] ?? rec.khr ?? params.khr ?? 0)
+        : (curr === 'KHR' ? amt : 0);
+      const method = String(rec['ប្រតិបត្តិការ'] || rec.method || params.method || 'សាច់ប្រាក់');
+      const ts = String(rec['ម៉ោងកត់ត្រា'] || rec.timestamp || rec.date || params.timestamp || '');
+
+      const data = sheet.getDataRange().getValues();
+      for (let i = 1; i &lt; data.length; i++) {
+        if (String(data[i][6]) === targetId) {
+          sheet.getRange(i + 1, 2, 1, 6).setValues([[
+            name,
+            usd,
+            khr,
+            method,
+            ts || data[i][5],
+            targetId
+          ]]);
+          break;
+        }
+      }
+      return jsonOut_({ status: 'ok', action: 'update', id: targetId });
+    }
+
+    if (action === 'delete') {
+      const targetId = String(body.id || rec['ID'] || rec.id || params.id || '');
+      const data = sheet.getDataRange().getValues();
+      for (let i = data.length - 1; i &gt;= 1; i--) {
+        if (String(data[i][6]) === targetId) {
+          sheet.deleteRow(i + 1);
+          break;
+        }
+      }
+      renumberSerials_(sheet);
+      return jsonOut_({ status: 'ok', action: 'delete', id: targetId });
+    }
+
+    return jsonOut_({ status: 'ok', action: action });
+  } catch (err) {
+    return jsonOut_({ status: 'error', message: String(err) });
+  } finally {
+    lock.releaseLock();
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- TOAST NOTIFICATION STACK                                              -->
+  <!-- ===================================================================== -->
+  <div id="toastStack" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-[calc(100vw-2.5rem)] pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- COMPLETE APPLICATION LOGIC & ROCK-SOLID GOOGLE SHEET SYNC ENGINE      -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // 1. CONSTANTS & INITIAL STATE (TARGET SHEET: test-1 / Sheet1)
+    // =========================================================================
+    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbypnyduuStRpYMF3dd80UKhj-VLa7aTqGdC9ZTb5oZSTg9Jf9SPcNgavFzObe31_FrV/exec';
+    const GOOGLE_SHEET_ID = '10JSUA_er-tnyzaTiSTyPq0b8Ovkwt77mT9GJ1HGVKDo';
+    const TARGET_SHEET_NAME = 'Sheet1';
+
+    const STORAGE_KEYS = {
+      RECORDS: 'wedding_gifts_records_v3',
+      META: 'wedding_gifts_meta_v3',
+      QUEUE: 'wedding_sync_queue',
+      GAS_URL: 'wedding_gas_url_v3',
+      CUSTOM_QR: 'wedding_custom_qr_v3'
+    };
+
+    const QUICK_PRESETS = {
+      USD: [30, 50, 60, 80, 100],
+      KHR: [100000, 150000, 200000, 300000, 400000]
+    };
+
+    const KHMER_HONORIFICS = ['លោក', 'លោកស្រី', 'អ្នកនាង', 'កញ្ញា', 'ឯកឧត្តម', 'លោកជំទាវ', 'គ្រួសារ'];
+
+    const appState = {
+      records: [],
+      filter: 'ALL',
+      searchQuery: '',
+      paymentMethod: 'សាច់ប្រាក់', // 'សាច់ប្រាក់' or 'QR'
+      currency: 'USD',               // 'USD' or 'KHR'
+      amountFormatted: '',
+      autoSyncEnabled: true,
+      countdown: 5,
+      activeWrites: 0,
+      lastWriteTimestamp: 0,
+      syncQueue: [],
+      gasUrl: DEFAULT_GAS_URL,
+      pendingDeleteId: null,
+      deploymentBannerDismissed: false
+    };
+
+    // =========================================================================
+    // 2. INITIALIZATION & KEYBOARD SHORTCUTS
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPersistedState();
+      renderQuickAmountPills();
+      renderDashboard();
+      startAutoReloadLoop();
+
+      // Flush any pending offline/queued writes first, then read from Google Sheet
+      flushSyncQueue().then(() => fetchFromGoogleSheet(true));
+
+      // Focus guest name input on load
+      const nameInput = document.getElementById('guestNameInput');
+      if (nameInput) nameInput.focus();
+
+      // Global Cmd+K / Ctrl+K search shortcut
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          const headerSearch = document.getElementById('headerSearchInput');
+          const tableSearch = document.getElementById('tableSearchInput');
+          if (headerSearch && headerSearch.offsetParent !== null) {
+            headerSearch.focus();
+          } else if (tableSearch) {
+            tableSearch.focus();
+          }
+        }
+      });
+
+      // Automatically flush offline retry queue when browser reconnects
+      window.addEventListener('online', () => {
+        flushSyncQueue().then(() => fetchFromGoogleSheet(true));
+      });
+    });
+
+    function generateUniqueRecordId() {
+      const rand = Math.random().toString(36).slice(2, 7);
+      return `WG-${Date.now()}-${rand}`;
+    }
+
+    function formatKhmerSheetTimestamp(dateObj = new Date()) {
+      const dd = String(dateObj.getDate()).padStart(2, '0');
+      const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const yyyy = dateObj.getFullYear();
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const min = String(dateObj.getMinutes()).padStart(2, '0');
+      const ss = String(dateObj.getSeconds()).padStart(2, '0');
+      return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
+    }
+
+    function loadPersistedState() {
+      try {
+        const rawRecords = localStorage.getItem(STORAGE_KEYS.RECORDS);
+        if (rawRecords) {
+          const parsed = JSON.parse(rawRecords);
+          if (Array.isArray(parsed)) appState.records = parsed;
+        }
+
+        const rawMeta = localStorage.getItem(STORAGE_KEYS.META);
+        if (rawMeta) {
+          const meta = JSON.parse(rawMeta);
+          if (meta.coupleNames) document.getElementById('coupleNamesDisplay').textContent = meta.coupleNames;
+          if (meta.weddingDate) document.getElementById('weddingDateDisplay').textContent = meta.weddingDate;
+        }
+
+        const rawQueue = localStorage.getItem(STORAGE_KEYS.QUEUE);
+        if (rawQueue) {
+          const q = JSON.parse(rawQueue);
+          if (Array.isArray(q)) appState.syncQueue = q;
+        }
+
+        const savedUrl = localStorage.getItem(STORAGE_KEYS.GAS_URL);
+        appState.gasUrl = (savedUrl && savedUrl.startsWith('https://')) ? savedUrl : DEFAULT_GAS_URL;
+        document.getElementById('backendUrlInput').value = appState.gasUrl;
+
+        const savedQr = localStorage.getItem(STORAGE_KEYS.CUSTOM_QR);
+        if (savedQr) {
+          showCustomQrImage(savedQr);
+        }
+      } catch (err) {
+        console.error('State load error:', err);
+      }
+      updateQueueIndicators();
+    }
+
+    function saveRecordsLocally() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(appState.records));
+      } catch (err) {
+        console.error('Save records error:', err);
+      }
+    }
+
+    function saveQueueLocally() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.QUEUE, JSON.stringify(appState.syncQueue));
+      } catch (err) {
+        console.error('Save queue error:', err);
+      }
+      updateQueueIndicators();
+    }
+
+    // =========================================================================
+    // 3. NAVIGATION & INLINE GREETING EDITING
+    // =========================================================================
+    function scrollToSection(sectionId, btnEl) {
+      const target = document.getElementById(sectionId);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (btnEl) {
+        document.querySelectorAll('.nav-pill').forEach(pill => {
+          pill.className = 'nav-pill px-4 py-1.5 rounded-full text-xs font-semibold text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer';
+        });
+        btnEl.className = 'nav-pill px-4 py-1.5 rounded-full text-xs font-bold bg-[#1E1F1D] text-white transition-all cursor-pointer';
+      }
+    }
+
+    function saveWeddingMeta() {
+      const coupleEl = document.getElementById('coupleNamesDisplay');
+      const dateEl = document.getElementById('weddingDateDisplay');
+      const coupleNames = coupleEl.textContent.trim() || 'សុខ វិសាល & ចន្ទ សុភា';
+      const weddingDate = dateEl.textContent.trim() || 'ថ្ងៃអាទិត្យ ទី២២ ខែវិច្ឆិកា ឆ្នាំ២០២៦';
+      coupleEl.textContent = coupleNames;
+      dateEl.textContent = weddingDate;
+      localStorage.setItem(STORAGE_KEYS.META, JSON.stringify({ coupleNames, weddingDate }));
+      showToast('បានរក្សាទុកព័ត៌មានពិធីមង្គលការ', 'success');
+    }
+
+    function handleMetaKeydown(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        event.target.blur();
+      }
+    }
+
+    // =========================================================================
+    // 4. 4-STEP QUICK ENTRY FORM LOGIC
+    // =========================================================================
+    function focusQuickEntry() {
+      const card = document.getElementById('quickEntryCard');
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        const input = document.getElementById('guestNameInput');
+        if (input) input.focus();
+      }, 100);
+    }
+
+    function insertHonorific(prefix) {
+      const input = document.getElementById('guestNameInput');
+      let val = input.value.trimStart();
+
+      for (const h of KHMER_HONORIFICS) {
+        if (val.startsWith(h + ' ')) {
+          val = val.slice(h.length + 1).trimStart();
+          break;
+        } else if (val === h) {
+          val = '';
+          break;
+        }
+      }
+
+      input.value = val ? `${prefix} ${val}` : `${prefix} `;
+      updateClearNameVisibility();
+      input.focus();
+      const endPos = input.value.length;
+      input.setSelectionRange(endPos, endPos);
+    }
+
+    function updateClearNameVisibility() {
+      const input = document.getElementById('guestNameInput');
+      const btn = document.getElementById('clearGuestNameBtn');
+      btn.classList.toggle('hidden', input.value.length === 0);
+    }
+
+    function clearGuestNameInput() {
+      const input = document.getElementById('guestNameInput');
+      input.value = '';
+      updateClearNameVisibility();
+      input.focus();
+    }
+
+    function handleGuestNameKeydown(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const amountVal = parseAmountNumber(appState.amountFormatted);
+        if (amountVal > 0 && document.getElementById('guestNameInput').value.trim()) {
+          handleQuickSubmit(event);
+        } else {
+          document.getElementById('amountInput').focus();
+        }
+      }
+    }
+
+    function toggleNoteField() {
+      const box = document.getElementById('optionalNoteContainer');
+      const label = document.getElementById('noteToggleLabel');
+      const isHidden = box.classList.contains('hidden');
+      box.classList.toggle('hidden', !isHidden);
+      label.textContent = isHidden ? '− លាក់កំណត់ចំណាំ' : '+ កំណត់ចំណាំ';
+      if (isHidden) document.getElementById('guestNoteInput').focus();
+    }
+
+    function selectPaymentMethod(method) {
+      appState.paymentMethod = method;
+      const cashBtn = document.getElementById('btnMethodCash');
+      const qrBtn = document.getElementById('btnMethodQr');
+
+      if (method === 'សាច់ប្រាក់') {
+        cashBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-[#1E1F1D] text-white shadow-2xs transition-all cursor-pointer';
+        qrBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-transparent text-[#1E1F1D] hover:bg-white/75 transition-all cursor-pointer';
+      } else {
+        qrBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-[#1E1F1D] text-white shadow-2xs transition-all cursor-pointer';
+        cashBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-transparent text-[#1E1F1D] hover:bg-white/75 transition-all cursor-pointer';
+      }
+    }
+
+    function selectCurrency(curr) {
+      appState.currency = curr;
+      const usdBtn = document.getElementById('btnCurrencyUsd');
+      const khrBtn = document.getElementById('btnCurrencyKhr');
+      const symEl = document.getElementById('amountSymbolPrefix');
+      const hintEl = document.getElementById('currencyBadgeHint');
+
+      if (curr === 'USD') {
+        usdBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-[#C7F249] text-[#1E1F1D] border border-[#1E1F1D]/20 shadow-2xs transition-all cursor-pointer';
+        khrBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-transparent text-[#1E1F1D] hover:bg-white/75 transition-all cursor-pointer';
+        symEl.textContent = '$';
+        hintEl.textContent = 'ដុល្លារ ($)';
+      } else {
+        khrBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-[#C7F249] text-[#1E1F1D] border border-[#1E1F1D]/20 shadow-2xs transition-all cursor-pointer';
+        usdBtn.className = 'h-14 px-2.5 rounded-xl flex items-center justify-center gap-2 font-bold text-xs sm:text-sm bg-transparent text-[#1E1F1D] hover:bg-white/75 transition-all cursor-pointer';
+        symEl.textContent = '៛';
+        hintEl.textContent = 'រៀល (៛)';
+      }
+
+      clearAmountField(false);
+      renderQuickAmountPills();
+    }
+
+    function formatThousands(raw) {
+      if (!raw) return '';
+      const clean = String(raw).replace(/[^0-9.]/g, '');
+      const parts = clean.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.length > 1 ? `${parts[0]}.${parts[1].slice(0, 2)}` : parts[0];
+    }
+
+    function parseAmountNumber(str) {
+      if (!str) return 0;
+      const num = parseFloat(String(str).replace(/,/g, ''));
+      return isNaN(num) ? 0 : num;
+    }
+
+    function handleAmountFormatting(event) {
+      const input = event.target;
+      const formatted = formatThousands(input.value);
+      input.value = formatted;
+      appState.amountFormatted = formatted;
+      document.getElementById('clearAmountBtn').classList.toggle('hidden', formatted.length === 0);
+      syncActivePresetPill();
+    }
+
+    function handleAmountKeydown(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleQuickSubmit(event);
+      }
+    }
+
+    function clearAmountField(refocus = true) {
+      const input = document.getElementById('amountInput');
+      input.value = '';
+      appState.amountFormatted = '';
+      document.getElementById('clearAmountBtn').classList.add('hidden');
+      syncActivePresetPill();
+      if (refocus) input.focus();
+    }
+
+    function applyQuickAmount(val) {
+      const formatted = formatThousands(String(val));
+      const input = document.getElementById('amountInput');
+      input.value = formatted;
+      appState.amountFormatted = formatted;
+      document.getElementById('clearAmountBtn').classList.remove('hidden');
+      syncActivePresetPill();
+
+      const nameInput = document.getElementById('guestNameInput');
+      if (!nameInput.value.trim()) {
+        nameInput.focus();
+      } else {
+        input.focus();
+      }
+    }
+
+    function renderQuickAmountPills() {
+      const container = document.getElementById('quickAmountPills');
+      const list = QUICK_PRESETS[appState.currency];
+      const currentVal = parseAmountNumber(appState.amountFormatted);
+
+      container.innerHTML = list.map(val => {
+        const isSelected = currentVal === val;
+        const text = appState.currency === 'USD'
+          ? `$${val.toLocaleString('en-US')}`
+          : `${val.toLocaleString('en-US')}៛`;
+        const cls = isSelected
+          ? 'bg-[#C7F249] text-[#1E1F1D] border-[#1E1F1D] shadow-2xs scale-[1.02]'
+          : 'bg-[#F7F7F5] hover:bg-[#C7F249]/50 text-[#1E1F1D] border-[#D8E2EC]';
+        return `
+          <button
+            type="button"
+            data-val="${val}"
+            onclick="applyQuickAmount(${val})"
+            class="preset-pill min-h-[46px] px-2.5 py-2 rounded-2xl border text-xs sm:text-sm font-bold tabular-nums transition-all cursor-pointer active:scale-95 ${cls}"
+          >
+            ${text}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function syncActivePresetPill() {
+      const currentVal = parseAmountNumber(appState.amountFormatted);
+      document.querySelectorAll('.preset-pill').forEach(btn => {
+        const v = Number(btn.getAttribute('data-val'));
+        if (v === currentVal) {
+          btn.className = 'preset-pill min-h-[46px] px-2.5 py-2 rounded-2xl border text-xs sm:text-sm font-bold tabular-nums transition-all cursor-pointer active:scale-95 bg-[#C7F249] text-[#1E1F1D] border-[#1E1F1D] shadow-2xs scale-[1.02]';
+        } else {
+          btn.className = 'preset-pill min-h-[46px] px-2.5 py-2 rounded-2xl border text-xs sm:text-sm font-bold tabular-nums transition-all cursor-pointer active:scale-95 bg-[#F7F7F5] hover:bg-[#C7F249]/50 text-[#1E1F1D] border-[#D8E2EC]';
+        }
+      });
+    }
+
+    function handleQuickSubmit(event) {
+      if (event) event.preventDefault();
+
+      const nameInput = document.getElementById('guestNameInput');
+      const noteInput = document.getElementById('guestNoteInput');
+      const guestName = nameInput.value.trim();
+      const amount = parseAmountNumber(appState.amountFormatted);
+
+      if (!guestName) {
+        showToast('សូមបញ្ចូលឈ្មោះភ្ញៀវជាមុនសិន!', 'warning');
+        nameInput.focus();
+        return;
+      }
+
+      if (!amount || amount <= 0) {
+        showToast('សូមបញ្ចូល ឬ ជ្រើសរើសទឹកប្រាក់ចំណងដៃ!', 'warning');
+        document.getElementById('amountInput').focus();
+        return;
+      }
+
+      const now = new Date();
+      const timestampStr = formatKhmerSheetTimestamp(now);
+      const nextSerial = appState.records.length + 1;
+
+      const record = {
+        id: generateUniqueRecordId(),
+        rowNumber: nextSerial,
+        name: guestName,
+        method: appState.paymentMethod, // 'សាច់ប្រាក់' or 'QR'
+        currency: appState.currency,     // 'USD' or 'KHR'
+        amount: amount,
+        usd: appState.currency === 'USD' ? amount : 0,
+        khr: appState.currency === 'KHR' ? amount : 0,
+        note: noteInput.value.trim(),
+        date: timestampStr,
+        timestamp: timestampStr,
+        createdAt: Date.now(),
+        synced: false,
+        syncing: true,
+        syncError: null
+      };
+
+      // Optimistic local update + reset 5-second Auto-Reload timer
+      appState.lastWriteTimestamp = Date.now();
+      appState.countdown = 5;
+      updateAutoCountdownUI();
+
+      appState.records.unshift(record);
+      saveRecordsLocally();
+      renderDashboard();
+
+      // Queue & send immediately via Bulletproof Dual-Transport Engine
+      enqueueSyncOperation('add', record);
+
+      const displayAmt = record.currency === 'USD'
+        ? `$${record.amount.toLocaleString('en-US')}`
+        : `${record.amount.toLocaleString('en-US')} ៛`;
+      showToast(`បានកត់ត្រា៖ ${record.name} (${displayAmt})`, 'success');
+
+      // Reset inputs & keep focus on Guest Name for rapid continuous entry
+      nameInput.value = '';
+      noteInput.value = '';
+      updateClearNameVisibility();
+      clearAmountField(false);
+      nameInput.focus();
+    }
+
+    // =========================================================================
+    // 5. DASHBOARD RENDERING (KPIs, AVATAR STACK, TABLE, DONUT CHART)
+    // =========================================================================
+    function renderDashboard() {
+      renderKpiMetrics();
+      renderDonutChart();
+      renderGuestListTable();
+    }
+
+    function renderKpiMetrics() {
+      let usdTotal = 0, usdCash = 0, usdQr = 0;
+      let khrTotal = 0, khrCash = 0, khrQr = 0;
+      let cashGuests = 0, qrGuests = 0;
+
+      for (const r of appState.records) {
+        const amt = Number(r.amount) || 0;
+        const isQr = r.method === 'QR';
+        if (r.currency === 'USD') {
+          usdTotal += amt;
+          if (isQr) usdQr += amt;
+          else usdCash += amt;
+        } else {
+          khrTotal += amt;
+          if (isQr) khrQr += amt;
+          else khrCash += amt;
+        }
+        if (isQr) qrGuests++;
+        else cashGuests++;
+      }
+
+      // USD KPI & Progress Bar
+      document.getElementById('kpiUsdTotal').textContent = `$${usdTotal.toLocaleString('en-US', { minimumFractionDigits: usdTotal % 1 === 0 ? 0 : 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('kpiUsdCash').textContent = `$${usdCash.toLocaleString('en-US')}`;
+      document.getElementById('kpiUsdQr').textContent = `$${usdQr.toLocaleString('en-US')}`;
+      const usdCashPct = usdTotal > 0 ? Math.round((usdCash / usdTotal) * 100) : 50;
+      document.getElementById('usdCashBar').style.width = `${usdCashPct}%`;
+      document.getElementById('usdQrBar').style.width = `${100 - usdCashPct}%`;
+
+      // KHR KPI & Progress Bar
+      document.getElementById('kpiKhrTotal').textContent = `${khrTotal.toLocaleString('en-US')} ៛`;
+      document.getElementById('kpiKhrCash').textContent = `${khrCash.toLocaleString('en-US')} ៛`;
+      document.getElementById('kpiKhrQr').textContent = `${khrQr.toLocaleString('en-US')} ៛`;
+      const khrCashPct = khrTotal > 0 ? Math.round((khrCash / khrTotal) * 100) : 50;
+      document.getElementById('khrCashBar').style.width = `${khrCashPct}%`;
+      document.getElementById('khrQrBar').style.width = `${100 - khrCashPct}%`;
+
+      // Guests KPI & Overlapping Avatar Stack
+      const totalGuests = appState.records.length;
+      document.getElementById('kpiGuestsTotal').textContent = `${totalGuests.toLocaleString('en-US')} នាក់`;
+      document.getElementById('kpiCashGuests').textContent = `${cashGuests} នាក់`;
+      document.getElementById('kpiQrGuests').textContent = `${qrGuests} នាក់`;
+
+      const stackEl = document.getElementById('guestAvatarStack');
+      if (totalGuests === 0) {
+        stackEl.innerHTML = `
+          <span class="w-8 h-8 rounded-full bg-[#C7F249] border-2 border-white text-xs font-bold text-[#1E1F1D] flex items-center justify-center">ភ</span>
+          <span class="w-8 h-8 rounded-full bg-[#1E1F1D] border-2 border-white text-xs font-bold text-white flex items-center justify-center">ម</span>
+        `;
+      } else {
+        const recent = appState.records.slice(0, 3);
+        const colors = ['bg-[#C7F249] text-[#1E1F1D]', 'bg-[#1E1F1D] text-white', 'bg-[#D4EAFF] text-[#1E1F1D]'];
+        stackEl.innerHTML = recent.map((r, idx) => {
+          const initial = getKhmerInitial(r.name);
+          return `<span title="${escapeHtml(r.name)}" class="w-8 h-8 rounded-full ${colors[idx % colors.length]} border-2 border-white text-xs font-bold flex items-center justify-center">${escapeHtml(initial)}</span>`;
+        }).join('');
+      }
+
+      // Combined USD equivalent in Greeting Banner
+      const combinedUsd = usdTotal + (khrTotal / 4000);
+      document.getElementById('bannerTotalUsdEq').textContent = `$${combinedUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    function getKhmerInitial(fullName) {
+      let clean = String(fullName || '').trim();
+      for (const h of KHMER_HONORIFICS) {
+        if (clean.startsWith(h + ' ')) {
+          clean = clean.slice(h.length + 1).trim();
+          break;
+        }
+      }
+      return clean ? clean.charAt(0) : 'ភ';
+    }
+
+    function renderDonutChart() {
+      const total = appState.records.length;
+      const cashCount = appState.records.filter(r => r.method !== 'QR').length;
+      const qrCount = total - cashCount;
+      const circumference = 2 * Math.PI * 56; // 351.86
+
+      document.getElementById('donutTotalGuests').textContent = total;
+
+      const cashPct = total > 0 ? Math.round((cashCount / total) * 100) : 0;
+      const qrPct = total > 0 ? 100 - cashPct : 0;
+
+      document.getElementById('donutCashLabel').textContent = `${cashPct}% (${cashCount} នាក់)`;
+      document.getElementById('donutQrLabel').textContent = `${qrPct}% (${qrCount} នាក់)`;
+
+      const cashSeg = document.getElementById('donutCashSegment');
+      const qrSeg = document.getElementById('donutQrSegment');
+
+      if (total === 0) {
+        cashSeg.setAttribute('stroke-dasharray', `0 ${circumference}`);
+        qrSeg.setAttribute('stroke-dasharray', `0 ${circumference}`);
+        return;
+      }
+
+      const cashLen = (cashCount / total) * circumference;
+      const qrLen = (qrCount / total) * circumference;
+
+      cashSeg.setAttribute('stroke-dasharray', `${cashLen} ${circumference}`);
+      cashSeg.setAttribute('stroke-dashoffset', '0');
+
+      qrSeg.setAttribute('stroke-dasharray', `${qrLen} ${circumference}`);
+      qrSeg.setAttribute('stroke-dashoffset', `-${cashLen}`);
+    }
+
+    function setTableFilter(filterKey) {
+      appState.filter = filterKey;
+      document.querySelectorAll('.filter-pill').forEach(btn => {
+        const active = btn.getAttribute('data-filter') === filterKey;
+        const badge = btn.querySelector('span');
+        if (active) {
+          btn.className = 'filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#1E1F1D] text-white transition-all cursor-pointer shrink-0';
+          if (badge) badge.className = 'ml-1 px-1.5 py-0.2 rounded-full bg-white/20 text-[11px] tabular-nums';
+        } else {
+          btn.className = 'filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F7F7F5] text-[#5E6159] hover:text-[#1E1F1D] transition-all cursor-pointer shrink-0';
+          if (badge) badge.className = 'ml-1 px-1.5 py-0.2 rounded-full bg-[#E6E7E1] text-[11px] tabular-nums';
+        }
+      });
+      renderGuestListTable();
+    }
+
+    function handleGlobalSearch(q) {
+      appState.searchQuery = String(q || '').toLowerCase().trim();
+      const headerInput = document.getElementById('headerSearchInput');
+      const tableInput = document.getElementById('tableSearchInput');
+      if (headerInput && headerInput.value !== q) headerInput.value = q;
+      if (tableInput && tableInput.value !== q) tableInput.value = q;
+      renderGuestListTable();
+    }
+
+    function renderGuestListTable() {
+      // Update Filter Counters
+      document.getElementById('badgeAll').textContent = appState.records.length;
+      document.getElementById('badgeCash').textContent = appState.records.filter(r => r.method !== 'QR').length;
+      document.getElementById('badgeQr').textContent = appState.records.filter(r => r.method === 'QR').length;
+      document.getElementById('badgeUsd').textContent = appState.records.filter(r => r.currency === 'USD').length;
+      document.getElementById('badgeKhr').textContent = appState.records.filter(r => r.currency === 'KHR').length;
+
+      const filtered = appState.records.filter(r => {
+        if (appState.filter === 'សាច់ប្រាក់' && r.method === 'QR') return false;
+        if (appState.filter === 'QR' && r.method !== 'QR') return false;
+        if (appState.filter === 'USD' && r.currency !== 'USD') return false;
+        if (appState.filter === 'KHR' && r.currency !== 'KHR') return false;
+
+        if (appState.searchQuery) {
+          const text = `${r.name} ${r.note || ''}`.toLowerCase();
+          if (!text.includes(appState.searchQuery)) return false;
+        }
+        return true;
+      });
+
+      const tbody = document.getElementById('guestTableBody');
+      const emptyBox = document.getElementById('emptyGuestState');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyBox.classList.remove('hidden');
+        return;
+      }
+
+      emptyBox.classList.add('hidden');
+      const latestRecordId = appState.records.length > 0 ? appState.records[0].id : null;
+
+      tbody.innerHTML = filtered.map((r, idx) => {
+        const displayNum = filtered.length - idx;
+        const isLatest = r.id === latestRecordId;
+        const isQr = r.method === 'QR';
+        const formattedAmount = r.currency === 'USD'
+          ? `$${Number(r.amount).toLocaleString('en-US', { minimumFractionDigits: Number(r.amount) % 1 === 0 ? 0 : 2, maximumFractionDigits: 2 })}`
+          : `${Number(r.amount).toLocaleString('en-US')} ៛`;
+
+        const rowBg = isLatest
+          ? 'bg-[#C7F249]/22 hover:bg-[#C7F249]/32'
+          : 'hover:bg-[#F9FAF7]';
+
+        const methodTag = isQr
+          ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#C7F249]/55 border border-[#1E1F1D]/15 text-xs font-bold text-[#1E1F1D]">
+               <svg class="w-3.5 h-3.5 editorial-icon" viewBox="0 0 32 32" fill="none">
+                 <rect x="10" y="4" width="12" height="20" rx="3" fill="#C7F249" stroke="#1E1F1D" stroke-width="2"/>
+                 <rect x="13.5" y="10" width="5" height="5" rx="1" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.6"/>
+               </svg>
+               <span>QR</span>
+             </span>`
+          : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F2F3EE] border border-[#E2E4DC] text-xs font-bold text-[#1E1F1D]">
+               <svg class="w-3.5 h-3.5 editorial-icon" viewBox="0 0 32 32" fill="none">
+                 <rect x="5" y="10" width="22" height="15" rx="3.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="2"/>
+                 <rect x="19" y="15" width="8" height="5" rx="2" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.6"/>
+               </svg>
+               <span>សាច់ប្រាក់</span>
+             </span>`;
+
+        const syncTag = r.synced
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#C7F249] border border-[#1E1F1D]/20 text-[10px] font-bold text-[#1E1F1D]">✓ Sheet</span>`
+          : r.syncing
+            ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#D4EAFF] border border-[#93C5FD] text-[10px] font-bold text-[#1E3A8A]">⏳ កំពុងបញ្ជូន...</span>`
+            : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-[10px] font-bold text-amber-800">⚠ រង់ចាំបញ្ជូន</span>`;
+
+        const confirmingDel = appState.pendingDeleteId === r.id;
+
+        return `
+          <tr class="${rowBg} transition-colors">
+            <td class="py-3.5 pl-5 pr-2 text-xs font-bold text-[#8E9188] tabular-nums">${displayNum}</td>
+            <td class="py-3.5 px-3">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-[#1E1F1D] text-sm sm:text-[15px]">${escapeHtml(r.name)}</span>
+                ${isLatest ? '<span class="px-2 py-0.5 rounded-full bg-[#C7F249] border border-[#1E1F1D]/20 text-[10px] font-bold text-[#1E1F1D]">ថ្មីបំផុត</span>' : ''}
+              </div>
+              ${r.note ? `<div class="text-xs text-[#666960] mt-0.5">${escapeHtml(r.note)}</div>` : ''}
+              <div class="sm:hidden mt-1">${syncTag}</div>
+            </td>
+            <td class="py-3.5 px-3">${methodTag}</td>
+            <td class="py-3.5 px-3 text-right">
+              <span class="font-bold text-base tabular-nums text-[#1E1F1D]">${formattedAmount}</span>
+            </td>
+            <td class="py-3.5 px-3 hidden sm:table-cell">
+              <div class="text-xs text-[#666960] tabular-nums mb-0.5">${escapeHtml(r.timestamp || r.date || '')}</div>
+              <div>${syncTag}</div>
+            </td>
+            <td class="py-3.5 pl-2 pr-5 text-right">
+              <div class="inline-flex items-center justify-end gap-1.5">
+                <button
+                  type="button"
+                  onclick="openEditGuestModal('${r.id}')"
+                  title="កែសម្រួល"
+                  class="p-2 rounded-xl bg-[#FFFFFF] hover:bg-[#C7F249] border border-[#E5E6E0] text-[#1E1F1D] transition-colors cursor-pointer"
+                >
+                  <svg class="w-4 h-4 editorial-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M15.5 4.5L19.5 8.5L8 20H4V16L15.5 4.5Z" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                ${
+                  confirmingDel
+                    ? `<button
+                        type="button"
+                        onclick="executeDeleteGuest('${r.id}')"
+                        class="px-2.5 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-bold cursor-pointer"
+                      >
+                        លុបពិតមែន?
+                      </button>`
+                    : `<button
+                        type="button"
+                        onclick="promptDeleteGuest('${r.id}')"
+                        title="លុបទិន្នន័យ"
+                        class="p-2 rounded-xl bg-[#FFFFFF] hover:bg-rose-100 border border-[#E5E6E0] text-[#666960] hover:text-rose-700 transition-colors cursor-pointer"
+                      >
+                        <svg class="w-4 h-4 editorial-icon" viewBox="0 0 24 24" fill="none">
+                          <path d="M5 7H19M9 7V5C9 4.4 9.4 4 10 4H14C14.6 4 15 4.4 15 5V7M7 7L8 19C8 19.6 8.4 20 9 20H15C15.6 20 16 19.6 16 19L17 7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>`
+                }
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 6. EDIT & 2-STEP DELETE (NO alert() OR confirm())
+    // =========================================================================
+    function openEditGuestModal(id) {
+      const rec = appState.records.find(r => r.id === id);
+      if (!rec) return;
+
+      document.getElementById('editRecordId').value = rec.id;
+      document.getElementById('editRecordName').value = rec.name;
+      document.getElementById('editRecordMethod').value = rec.method === 'QR' ? 'QR' : 'សាច់ប្រាក់';
+      document.getElementById('editRecordCurrency').value = rec.currency;
+      document.getElementById('editRecordAmount').value = rec.amount;
+      document.getElementById('editRecordNote').value = rec.note || '';
+
+      document.getElementById('editGuestModal').classList.remove('hidden');
+    }
+
+    function closeEditGuestModal() {
+      document.getElementById('editGuestModal').classList.add('hidden');
+    }
+
+    function submitEditGuest(event) {
+      event.preventDefault();
+      const id = document.getElementById('editRecordId').value;
+      const idx = appState.records.findIndex(r => r.id === id);
+      if (idx === -1) return;
+
+      const currency = document.getElementById('editRecordCurrency').value;
+      const amount = parseFloat(document.getElementById('editRecordAmount').value) || 0;
+
+      const updated = {
+        ...appState.records[idx],
+        name: document.getElementById('editRecordName').value.trim(),
+        method: document.getElementById('editRecordMethod').value,
+        currency: currency,
+        amount: amount,
+        usd: currency === 'USD' ? amount : 0,
+        khr: currency === 'KHR' ? amount : 0,
+        note: document.getElementById('editRecordNote').value.trim(),
+        createdAt: Date.now(),
+        synced: false,
+        syncing: true,
+        syncError: null
+      };
+
+      appState.lastWriteTimestamp = Date.now();
+      appState.countdown = 5;
+      updateAutoCountdownUI();
+
+      appState.records[idx] = updated;
+      saveRecordsLocally();
+      renderDashboard();
+      closeEditGuestModal();
+
+      enqueueSyncOperation('update', updated);
+      showToast(`បានកែសម្រួល៖ ${updated.name}`, 'success');
+    }
+
+    function promptDeleteGuest(id) {
+      appState.pendingDeleteId = id;
+      renderGuestListTable();
+      setTimeout(() => {
+        if (appState.pendingDeleteId === id) {
+          appState.pendingDeleteId = null;
+          renderGuestListTable();
+        }
+      }, 4000);
+    }
+
+    function executeDeleteGuest(id) {
+      const target = appState.records.find(r => r.id === id);
+      appState.lastWriteTimestamp = Date.now();
+      appState.countdown = 5;
+      updateAutoCountdownUI();
+
+      appState.records = appState.records.filter(r => r.id !== id);
+      appState.pendingDeleteId = null;
+      saveRecordsLocally();
+      renderDashboard();
+
+      enqueueSyncOperation('delete', target || { id });
+      showToast(`បានលុបទិន្នន័យ៖ ${target ? target.name : ''}`, 'info');
+    }
+
+    // =========================================================================
+    // 7. EXCEL (.XLSX) IMPORT & EXPORT WITH SEPARATE USD/KHR + TOTAL SUMMARY ROW
+    // =========================================================================
+    function exportToExcel() {
+      if (appState.records.length === 0) {
+        showToast('មិនទាន់មានទិន្នន័យសម្រាប់នាំចេញទេ!', 'warning');
+        return;
+      }
+
+      let sumUsd = 0;
+      let sumKhr = 0;
+
+      const sheetRows = appState.records.map((r, i) => {
+        const amt = Number(r.amount) || 0;
+        const usdVal = r.currency === 'USD' ? amt : 0;
+        const khrVal = r.currency === 'KHR' ? amt : 0;
+        sumUsd += usdVal;
+        sumKhr += khrVal;
+
+        return {
+          'ល.រ': i + 1,
+          'ឈ្មោះភ្ញៀវ': r.name,
+          'ប្រភេទប្រតិបត្តិការ': r.method === 'QR' ? 'QR' : 'សាច់ប្រាក់',
+          'ប្រាក់ដុល្លារ ($)': usdVal,
+          'ប្រាក់រៀល (៛)': khrVal,
+          'កំណត់ចំណាំ': r.note || '',
+          'កាលបរិច្ឆេទ': r.date || r.timestamp || ''
+        };
+      });
+
+      // Append Total Summary Row
+      sheetRows.push({
+        'ល.រ': '',
+        'ឈ្មោះភ្ញៀវ': `សរុបរួម (${appState.records.length} នាក់)`,
+        'ប្រភេទប្រតិបត្តិការ': '',
+        'ប្រាក់ដុល្លារ ($)': sumUsd,
+        'ប្រាក់រៀល (៛)': sumKhr,
+        'កំណត់ចំណាំ': '',
+        'កាលបរិច្ឆេទ': ''
+      });
+
+      const ws = XLSX.utils.json_to_sheet(sheetRows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'WeddingGifts');
+      XLSX.writeFile(wb, `Wedding_Gifts_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      showToast('បាននាំចេញឯកសារ Excel (.xlsx) រួចរាល់!', 'success');
+    }
+
+    function handleExcelImport(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(ws);
+
+          let addedCount = 0;
+          rows.forEach((row, idx) => {
+            const rawName = String(row['ឈ្មោះភ្ញៀវ'] || row['Guest Name'] || row['Name'] || '').trim();
+            if (!rawName || rawName.startsWith('សរុបរួម')) return;
+
+            const usdCol = parseFloat(String(row['ប្រាក់ដុល្លារ ($)'] || row['USD'] || 0).replace(/,/g, '')) || 0;
+            const khrCol = parseFloat(String(row['ប្រាក់រៀល (៛)'] || row['KHR'] || 0).replace(/,/g, '')) || 0;
+            const genericAmt = parseFloat(String(row['ទឹកប្រាក់'] || row['Amount'] || 0).replace(/,/g, '')) || 0;
+
+            let currency = 'USD';
+            let amount = 0;
+
+            if (usdCol > 0) {
+              currency = 'USD';
+              amount = usdCol;
+            } else if (khrCol > 0) {
+              currency = 'KHR';
+              amount = khrCol;
+            } else if (genericAmt > 0) {
+              const rawCurr = String(row['រូបិយប័ណ្ណ'] || row['Currency'] || 'USD').toUpperCase();
+              currency = (rawCurr.includes('KHR') || rawCurr.includes('រៀល')) ? 'KHR' : 'USD';
+              amount = genericAmt;
+            }
+
+            if (amount > 0) {
+              const rawMethod = String(row['ប្រតិបត្តិការ'] || row['ប្រភេទប្រតិបត្តិការ'] || row['វិធីទូទាត់'] || row['Method'] || 'សាច់ប្រាក់');
+              const dateStr = String(row['ម៉ោងកត់ត្រា'] || row['កាលបរិច្ឆេទ'] || row['Date'] || formatKhmerSheetTimestamp(new Date()));
+              const rec = {
+                id: generateUniqueRecordId(),
+                rowNumber: appState.records.length + 1,
+                name: rawName,
+                method: rawMethod.toUpperCase().includes('QR') ? 'QR' : 'សាច់ប្រាក់',
+                currency,
+                amount,
+                usd: currency === 'USD' ? amount : 0,
+                khr: currency === 'KHR' ? amount : 0,
+                note: String(row['កំណត់ចំណាំ'] || row['Note'] || '').trim(),
+                date: dateStr,
+                timestamp: dateStr,
+                createdAt: Date.now(),
+                synced: false,
+                syncing: true,
+                syncError: null
+              };
+              appState.records.unshift(rec);
+              enqueueSyncOperation('add', rec);
+              addedCount++;
+            }
+          });
+
+          appState.lastWriteTimestamp = Date.now();
+          appState.countdown = 5;
+          updateAutoCountdownUI();
+          saveRecordsLocally();
+          renderDashboard();
+          showToast(`បាននាំចូលទិន្នន័យភ្ញៀវចំនួន ${addedCount} នាក់!`, 'success');
+        } catch (err) {
+          console.error('Excel import error:', err);
+          showToast('មិនអាចអានឯកសារ Excel បានទេ!', 'warning');
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // =========================================================================
+    // 9. BULLETPROOF DUAL-TRANSPORT GOOGLE APPS SCRIPT SYNC ENGINE
+    // =========================================================================
+    function openBackendModal() {
+      document.getElementById('backendUrlInput').value = appState.gasUrl;
+      document.getElementById('backendModal').classList.remove('hidden');
+    }
+
+    function closeBackendModal() {
+      document.getElementById('backendModal').classList.add('hidden');
+    }
+
+    function dismissDeploymentBanner() {
+      appState.deploymentBannerDismissed = true;
+      document.getElementById('deploymentMismatchBanner').classList.add('hidden');
+    }
+
+    function showDeploymentBanner() {
+      if (!appState.deploymentBannerDismissed) {
+        document.getElementById('deploymentMismatchBanner').classList.remove('hidden');
+      }
+    }
+
+    function hideDeploymentBanner() {
+      document.getElementById('deploymentMismatchBanner').classList.add('hidden');
+    }
+
+    function saveCustomGasUrl() {
+      const val = document.getElementById('backendUrlInput').value.trim();
+      if (!val) {
+        showToast('សូមបញ្ចូលតំណ Google Apps Script Web App URL!', 'warning');
+        return;
+      }
+      if (!val.startsWith('https://script.google.com/')) {
+        showToast('តំណ URL គួរតែចាប់ផ្តើមដោយ https://script.google.com/...', 'warning');
+      }
+      appState.gasUrl = val;
+      appState.deploymentBannerDismissed = false;
+      localStorage.setItem(STORAGE_KEYS.GAS_URL, val);
+      showToast('បានរក្សាទុក Web App URL ថ្មី និងកំពុងតភ្ជាប់ទៅ test-1...', 'success');
+      flushSyncQueue().then(() => testBackendConnection());
+    }
+
+    function resetDefaultGasUrl() {
+      appState.gasUrl = DEFAULT_GAS_URL;
+      appState.deploymentBannerDismissed = false;
+      document.getElementById('backendUrlInput').value = DEFAULT_GAS_URL;
+      localStorage.setItem(STORAGE_KEYS.GAS_URL, DEFAULT_GAS_URL);
+      showToast('បានកំណត់ត្រឡប់ទៅ Web App URL ដើម!', 'success');
+      flushSyncQueue().then(() => fetchFromGoogleSheet(false));
+    }
+
+    function copyCodeGsSnippet() {
+      const text = document.getElementById('codeGsSource').textContent;
+      copyTextToClipboard(text, 'កូដ Code.gs');
+    }
+
+    function updateQueueIndicators() {
+      const count = appState.syncQueue.length;
+      const headerBadge = document.getElementById('headerQueueBadge');
+      const cardCount = document.getElementById('cardQueueCount');
+      const retryBtn = document.getElementById('retrySyncNowBtn');
+
+      if (cardCount) cardCount.textContent = count;
+      if (headerBadge) {
+        headerBadge.textContent = count;
+        headerBadge.classList.toggle('hidden', count === 0);
+      }
+      if (retryBtn) {
+        retryBtn.textContent = count > 0
+          ? `បញ្ជូនឡើងវិញឥឡូវនេះ (${count} រង់ចាំ)`
+          : 'បញ្ជូនឡើងវិញឥឡូវនេះ (Retry Sync)';
+      }
+    }
+
+    function setConnectionStatusUI(isConnected, statusText) {
+      const dot = document.getElementById('headerSyncDot');
+      const headerLabel = document.getElementById('headerSyncLabel');
+      const cardStatus = document.getElementById('cardConnectionStatus');
+
+      if (isConnected) {
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-[#65A30D] sync-dot-live';
+        if (headerLabel) headerLabel.textContent = 'Sheet ភ្ជាប់រួច';
+        if (cardStatus) {
+          cardStatus.textContent = statusText || '● បានតភ្ជាប់រួចរាល់';
+          cardStatus.className = 'font-bold text-[#3F7D12]';
+        }
+      } else {
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-500';
+        if (headerLabel) headerLabel.textContent = 'Offline Queue';
+        if (cardStatus) {
+          cardStatus.textContent = statusText || '● រង់ចាំការតភ្ជាប់';
+          cardStatus.className = 'font-bold text-amber-600';
+        }
+      }
+    }
+
+    // Build payload with BOTH exact Khmer Sheet1 headers (A-G) and English keys
+    function buildSheetPayload(action, record = null, allRecords = null) {
+      const amt = record ? Number(record.amount || 0) : 0;
+      const curr = record ? String(record.currency || 'USD').toUpperCase() : 'USD';
+      const usdVal = record ? (curr === 'USD' ? amt : 0) : 0;
+      const khrVal = record ? (curr === 'KHR' ? amt : 0) : 0;
+      const tsVal = record ? (record.timestamp || record.date || formatKhmerSheetTimestamp(new Date())) : '';
+      const methodVal = record ? (record.method === 'QR' ? 'QR' : 'សាច់ប្រាក់') : '';
+      const rowNum = record ? (record.rowNumber || 1) : 1;
+
+      const normalizedRecord = record
+        ? {
+            id: record.id,
+            rowNumber: rowNum,
+            name: record.name,
+            usd: usdVal,
+            khr: khrVal,
+            amount: amt,
+            currency: curr,
+            method: methodVal,
+            timestamp: tsVal,
+            date: tsVal,
+            note: record.note || '',
+            'ល.រ': rowNum,
+            'ឈ្មោះអ្នកចូលរួម': record.name,
+            'ទឹកប្រាក់ ($)': usdVal,
+            'ទឹកប្រាក់ (៛)': khrVal,
+            'ប្រតិបត្តិការ': methodVal,
+            'ម៉ោងកត់ត្រា': tsVal,
+            'ID': record.id
+          }
+        : undefined;
+
+      const normalizedAll = (action === 'sync_all' && Array.isArray(allRecords))
+        ? allRecords.map((r, i) => {
+            const rAmt = Number(r.amount || 0);
+            const rCurr = String(r.currency || 'USD').toUpperCase();
+            const rUsd = rCurr === 'USD' ? rAmt : 0;
+            const rKhr = rCurr === 'KHR' ? rAmt : 0;
+            const rTs = r.timestamp || r.date || '';
+            const rMethod = r.method === 'QR' ? 'QR' : 'សាច់ប្រាក់';
+            return {
+              id: r.id,
+              rowNumber: i + 1,
+              name: r.name,
+              usd: rUsd,
+              khr: rKhr,
+              amount: rAmt,
+              currency: rCurr,
+              method: rMethod,
+              timestamp: rTs,
+              date: rTs,
+              note: r.note || '',
+              'ល.រ': i + 1,
+              'ឈ្មោះអ្នកចូលរួម': r.name,
+              'ទឹកប្រាក់ ($)': rUsd,
+              'ទឹកប្រាក់ (៛)': rKhr,
+              'ប្រតិបត្តិការ': rMethod,
+              'ម៉ោងកត់ត្រា': rTs,
+              'ID': r.id
+            };
+          })
+        : undefined;
+
+      return {
+        action,
+        id: record ? record.id : undefined,
+        rowNumber: record ? rowNum : undefined,
+        name: record ? record.name : undefined,
+        guestName: record ? record.name : undefined,
+        usd: record ? usdVal : undefined,
+        khr: record ? khrVal : undefined,
+        amount: record ? amt : undefined,
+        currency: record ? curr : undefined,
+        method: record ? methodVal : undefined,
+        timestamp: record ? tsVal : undefined,
+        date: record ? tsVal : undefined,
+        note: record ? (record.note || '') : undefined,
+        'ល.រ': record ? rowNum : undefined,
+        'ឈ្មោះអ្នកចូលរួម': record ? record.name : undefined,
+        'ទឹកប្រាក់ ($)': record ? usdVal : undefined,
+        'ទឹកប្រាក់ (៛)': record ? khrVal : undefined,
+        'ប្រតិបត្តិការ': record ? methodVal : undefined,
+        'ម៉ោងកត់ត្រា': record ? tsVal : undefined,
+        'ID': record ? record.id : undefined,
+        record: normalizedRecord,
+        records: normalizedAll
+      };
+    }
+
+    function buildGetQueryUrl(action, payload) {
+      const sep = appState.gasUrl.includes('?') ? '&' : '?';
+      const params = new URLSearchParams();
+      params.set('action', action);
+      if (payload.id) params.set('id', String(payload.id));
+      if (payload.rowNumber !== undefined) params.set('rowNumber', String(payload.rowNumber));
+      if (payload.name) params.set('name', String(payload.name));
+      if (payload.usd !== undefined) params.set('usd', String(payload.usd));
+      if (payload.khr !== undefined) params.set('khr', String(payload.khr));
+      if (payload.amount !== undefined) params.set('amount', String(payload.amount));
+      if (payload.currency) params.set('currency', String(payload.currency));
+      if (payload.method) params.set('method', String(payload.method));
+      if (payload.timestamp) params.set('timestamp', String(payload.timestamp));
+      if (payload.note) params.set('note', String(payload.note));
+      params.set('t', String(Date.now()));
+      return `${appState.gasUrl}${sep}${params.toString()}`;
+    }
+
+    // Bulletproof Dual-Transport Sender:
+    // Transport 1: POST text/plain (bypasses CORS preflight)
+    // Transport 2: GET URLSearchParams fallback (if Apps Script only handles doGet or blocks POST redirect)
+    // Transport 3: Guaranteed no-cors beacon fallback (reaches Google even in strict sandboxed iframes)
+    async function sendToGoogleSheet(action, record = null, allRecords = null) {
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        throw new Error('Browser is offline');
+      }
+
+      const payload = buildSheetPayload(action, record, allRecords);
+      const serializedBody = JSON.stringify(payload);
+      const postSep = appState.gasUrl.includes('?') ? '&' : '?';
+      const postUrl = `${appState.gasUrl}${postSep}action=${encodeURIComponent(action)}`;
+
+      // --- TRANSPORT 1: Primary POST (text/plain;charset=utf-8, redirect: follow) ---
+      try {
+        const res = await fetch(postUrl, {
+          method: 'POST',
+          mode: 'cors',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: serializedBody
+        });
+
+        const rawText = await res.text();
+        const trimmed = rawText.trim();
+
+        // If Google returned HTML (e.g., error page or doGet fallback needed) rather than JSON, try Transport 2
+        if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+          throw new Error('Non-JSON response from POST');
+        }
+
+        const parsed = JSON.parse(trimmed);
+        if (parsed && (parsed.status === 'error' || parsed.ok === false || parsed.success === false)) {
+          throw new Error(parsed.message || parsed.error || 'Apps Script error');
+        }
+
+        return { ok: true, transport: 'POST-CORS', data: parsed };
+      } catch (postErr) {
+        // --- TRANSPORT 2: Automatic GET Query Fallback (for add / update / delete) ---
+        if (action !== 'sync_all') {
+          const getUrl = buildGetQueryUrl(action, payload);
+          try {
+            const getRes = await fetch(getUrl, {
+              method: 'GET',
+              mode: 'cors',
+              redirect: 'follow',
+              cache: 'no-store'
+            });
+            const getText = (await getRes.text()).trim();
+            if (getText.startsWith('{') || getText.startsWith('[')) {
+              const parsedGet = JSON.parse(getText);
+              if (parsedGet && parsedGet.status !== 'error' && parsedGet.ok !== false) {
+                return { ok: true, transport: 'GET-CORS', data: parsedGet };
+              }
+            }
+          } catch (_) {
+            // Fall through to Transport 3
+          }
+
+          // --- TRANSPORT 3: Guaranteed No-CORS Beacon Fallback ---
+          await fetch(getUrl, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-store'
+          });
+          return { ok: true, transport: 'GET-NO-CORS', data: null };
+        } else {
+          // For sync_all, fire POST no-cors fallback
+          await fetch(postUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: serializedBody
+          });
+          return { ok: true, transport: 'POST-NO-CORS', data: null };
+        }
+      }
+    }
+
+    function enqueueSyncOperation(action, record = null, allRecords = null) {
+      // Deduplicate queued items for same record ID when updating/deleting
+      if (record && record.id && (action === 'update' || action === 'delete')) {
+        appState.syncQueue = appState.syncQueue.filter(q => !(q.record && q.record.id === record.id && q.action === action));
+      }
+
+      appState.syncQueue.push({
+        queueId: 'Q-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5),
+        action,
+        record,
+        allRecords,
+        createdAt: Date.now()
+      });
+      saveQueueLocally();
+      flushSyncQueue();
+    }
+
+    async function flushSyncQueue() {
+      if (appState.syncQueue.length === 0 || !appState.gasUrl) return;
+
+      appState.activeWrites++;
+      appState.lastWriteTimestamp = Date.now();
+      const verifiedIdsToCheck = [];
+
+      try {
+        while (appState.syncQueue.length > 0) {
+          const item = appState.syncQueue[0];
+          if (item.record && item.record.id) {
+            const localRec = appState.records.find(r => r.id === item.record.id);
+            if (localRec) {
+              localRec.syncing = true;
+              localRec.syncError = null;
+            }
+          }
+
+          try {
+            const result = await sendToGoogleSheet(item.action, item.record, item.allRecords);
+
+            // Remove committed item from queue
+            appState.syncQueue.shift();
+            saveQueueLocally();
+
+            if (item.action === 'sync_all') {
+              appState.records.forEach(r => {
+                r.synced = true;
+                r.syncing = false;
+                r.syncError = null;
+              });
+              hideDeploymentBanner();
+            } else if (item.record && item.record.id) {
+              const localItem = appState.records.find(r => r.id === item.record.id);
+              if (localItem) {
+                localItem.syncing = false;
+                if (result.transport === 'POST-CORS' || result.transport === 'GET-CORS') {
+                  localItem.synced = true;
+                  localItem.syncError = null;
+                  hideDeploymentBanner();
+                } else {
+                  // Sent via no-cors; schedule server verification read
+                  verifiedIdsToCheck.push(item.record.id);
+                }
+              }
+            }
+
+            setConnectionStatusUI(true, '● បានធ្វើសមកាលកម្មរួចរាល់');
+            document.getElementById('cardLastSyncTime').textContent = new Date().toLocaleTimeString('en-GB');
+          } catch (err) {
+            console.warn('Sync operation paused for retry:', err);
+            if (item.record && item.record.id) {
+              const localItem = appState.records.find(r => r.id === item.record.id);
+              if (localItem) {
+                localItem.syncing = false;
+                localItem.synced = false;
+                localItem.syncError = String(err.message || 'Network error');
+              }
+            }
+            setConnectionStatusUI(false, '● រង់ចាំការតភ្ជាប់ឡើងវិញ');
+            break;
+          }
+        }
+      } finally {
+        saveRecordsLocally();
+        renderGuestListTable();
+        appState.activeWrites = Math.max(0, appState.activeWrites - 1);
+        appState.lastWriteTimestamp = Date.now();
+      }
+
+      // Verify no-cors writes against live GET ?action=read
+      if (verifiedIdsToCheck.length > 0) {
+        setTimeout(() => verifyWrittenRecordsInSheet(verifiedIdsToCheck), 1200);
+      }
+    }
+
+    async function verifyWrittenRecordsInSheet(recordIds) {
+      try {
+        const sep = appState.gasUrl.includes('?') ? '&' : '?';
+        const url = `${appState.gasUrl}${sep}action=read&t=${Date.now()}`;
+        const res = await fetch(url, { method: 'GET', redirect: 'follow', cache: 'no-store' });
+        if (!res.ok) return;
+
+        const text = (await res.text()).trim();
+        if (!text.startsWith('{') && !text.startsWith('[')) return;
+        const json = JSON.parse(text);
+        const rows = extractRowsFromResponse(json);
+        if (!rows) return;
+
+        const normalized = normalizeSheetRows(rows);
+        const serverIdSet = new Set(normalized.map(r => r.id));
+
+        let anyMissingOnServer = false;
+        recordIds.forEach(id => {
+          const localRec = appState.records.find(r => r.id === id);
+          if (!localRec) return;
+          if (serverIdSet.has(id)) {
+            localRec.synced = true;
+            localRec.syncing = false;
+            localRec.syncError = null;
+          } else {
+            localRec.syncing = false;
+            localRec.synced = false;
+            localRec.syncError = 'Missing in Sheet1';
+            anyMissingOnServer = true;
+          }
+        });
+
+        saveRecordsLocally();
+        renderGuestListTable();
+
+        if (anyMissingOnServer) {
+          showDeploymentBanner();
+        } else {
+          hideDeploymentBanner();
+        }
+      } catch (_) {
+        // If GET verification itself is blocked by CORS, leave optimistic state intact
+      }
+    }
+
+    function retrySyncNow() {
+      appState.countdown = 5;
+      updateAutoCountdownUI();
+
+      // Re-enqueue any local un-synced records not already in syncQueue
+      const queuedIds = new Set(
+        appState.syncQueue.filter(q => q.record && q.record.id).map(q => q.record.id)
+      );
+
+      let addedToQueue = 0;
+      // Add oldest un-synced first so order in Sheet1 matches entry order
+      const unsynced = [...appState.records].reverse().filter(r => !r.synced && !queuedIds.has(r.id));
+      unsynced.forEach(r => {
+        r.syncing = true;
+        appState.syncQueue.push({
+          queueId: 'Q-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5),
+          action: 'add',
+          record: r,
+          createdAt: Date.now()
+        });
+        addedToQueue++;
+      });
+
+      saveQueueLocally();
+      renderGuestListTable();
+
+      if (appState.syncQueue.length === 0) {
+        showToast('ទិន្នន័យទាំងអស់ត្រូវបានបញ្ជូនទៅ Google Sheet រួចរាល់ហើយ!', 'success');
+        fetchFromGoogleSheet(false);
+        return;
+      }
+
+      showToast(`កំពុងបញ្ជូនទិន្នន័យចំនួន ${appState.syncQueue.length} ទៅ Google Sheet...`, 'info');
+      flushSyncQueue();
+    }
+
+    // Anti-Overwrite GET Reader: Merges server rows by ID while protecting recent (<20s) & queued local rows
+    async function fetchFromGoogleSheet(isBackground = true) {
+      if (!appState.gasUrl) return null;
+
+      // Always retry pending queue items during 5s tick
+      if (appState.syncQueue.length > 0) {
+        flushSyncQueue();
+        if (isBackground) return null;
+      }
+
+      if (isBackground && appState.activeWrites > 0) return null;
+      if (isBackground && (Date.now() - appState.lastWriteTimestamp) < 4000) return null;
+
+      const startTime = performance.now();
+      const sep = appState.gasUrl.includes('?') ? '&' : '?';
+      const url = `${appState.gasUrl}${sep}action=read&t=${Date.now()}`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          redirect: 'follow',
+          cache: 'no-store'
+        });
+
+        const latencyMs = Math.round(performance.now() - startTime);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const rawText = (await response.text()).trim();
+        if (!rawText.startsWith('{') && !rawText.startsWith('[')) {
+          throw new Error('Non-JSON response');
+        }
+
+        const json = JSON.parse(rawText);
+        const extractedRows = extractRowsFromResponse(json);
+
+        if (extractedRows !== null) {
+          if (isBackground && appState.activeWrites > 0) {
+            return { status: response.status, latencyMs, count: extractedRows.length };
+          }
+
+          const serverNormalized = normalizeSheetRows(extractedRows);
+          // Reverse so newest server row (highest ល.រ) is at index 0
+          const serverNewestFirst = [...serverNormalized].reverse();
+
+          // Build lookup maps from current local records
+          const localById = new Map(appState.records.map(r => [r.id, r]));
+          const queuedDeleteIds = new Set(
+            appState.syncQueue
+              .filter(q => q.action === 'delete' && q.record && q.record.id)
+              .map(q => q.record.id)
+          );
+          const queuedUpsertIds = new Set(
+            appState.syncQueue
+              .filter(q => (q.action === 'add' || q.action === 'update') && q.record && q.record.id)
+              .map(q => q.record.id)
+          );
+
+          const serverIds = new Set();
+          const mergedServerRecords = [];
+
+          for (const sRec of serverNewestFirst) {
+            if (queuedDeleteIds.has(sRec.id)) continue;
+            serverIds.add(sRec.id);
+
+            const existingLocal = localById.get(sRec.id);
+            if (existingLocal && queuedUpsertIds.has(sRec.id)) {
+              // Keep pending local edit until queue finishes flushing
+              mergedServerRecords.push(existingLocal);
+            } else {
+              // Confirm synced in Sheet1 and preserve local note if Sheet1 doesn't store notes
+              mergedServerRecords.push({
+                ...sRec,
+                note: sRec.note || (existingLocal ? existingLocal.note : ''),
+                createdAt: existingLocal ? existingLocal.createdAt : 0,
+                synced: true,
+                syncing: false,
+                syncError: null
+              });
+            }
+          }
+
+          // Preserve any local rows created within the last 20 seconds or still in syncQueue that aren't on server yet
+          const nowMs = Date.now();
+          const protectedLocalRecords = appState.records.filter(r => {
+            if (serverIds.has(r.id) || queuedDeleteIds.has(r.id)) return false;
+            const isRecent = (nowMs - (r.createdAt || 0)) < 20000;
+            const isQueued = queuedUpsertIds.has(r.id);
+            return isRecent || isQueued;
+          });
+
+          appState.records = [...protectedLocalRecords, ...mergedServerRecords];
+          saveRecordsLocally();
+          renderDashboard();
+
+          setConnectionStatusUI(true, '● បានតភ្ជាប់រួចរាល់');
+          document.getElementById('cardLastSyncTime').textContent = new Date().toLocaleTimeString('en-GB');
+
+          if (!isBackground) {
+            showToast(`បានទាញទិន្នន័យពី Google Sheet (${serverNormalized.length} នាក់)`, 'success');
+          }
+          return { status: response.status, latencyMs, count: serverNormalized.length };
+        }
+
+        return { status: response.status, latencyMs, count: 0 };
+      } catch (err) {
+        console.warn('GET fetch warning:', err);
+        setConnectionStatusUI(false, '● ប្រើទិន្នន័យក្នុងម៉ាស៊ីន');
+        if (!isBackground) {
+          showToast('មិនអាចទាញទិន្នន័យពី Google Sheet បានទេ!', 'warning');
+        }
+        return null;
+      }
+    }
+
+    function extractRowsFromResponse(json) {
+      if (!json) return null;
+      let candidate = null;
+
+      if (Array.isArray(json)) {
+        candidate = json;
+      } else if (typeof json === 'object') {
+        candidate =
+          (Array.isArray(json.records) && json.records) ||
+          (Array.isArray(json.data) && json.data) ||
+          (Array.isArray(json.rows) && json.rows) ||
+          (Array.isArray(json.items) && json.items) ||
+          (Array.isArray(json.gifts) && json.gifts) ||
+          (Array.isArray(json.values) && json.values) ||
+          (Array.isArray(json.result) && json.result) ||
+          null;
+      }
+
+      if (!candidate) return null;
+
+      // Handle 2D matrix array (raw sheet.getDataRange().getValues())
+      if (candidate.length > 0 && Array.isArray(candidate[0])) {
+        const headers = candidate[0].map(h => String(h || '').trim());
+        const mapped = [];
+        for (let i = 1; i < candidate.length; i++) {
+          const rowArr = candidate[i];
+          if (!rowArr || rowArr.every(cell => cell === '' || cell === null || cell === undefined)) continue;
+          const obj = {};
+          headers.forEach((h, colIdx) => {
+            obj[h || `col_${colIdx}`] = rowArr[colIdx];
+          });
+          mapped.push(obj);
+        }
+        return mapped;
+      }
+
+      return candidate;
+    }
+
+    // Parse exact Sheet1 Khmer headers ('ល.រ', 'ឈ្មោះអ្នកចូលរួម', 'ទឹកប្រាក់ ($)', 'ទឹកប្រាក់ (៛)', 'ប្រតិបត្តិការ', 'ម៉ោងកត់ត្រា', 'ID')
+    // AND fallback English/legacy columns seamlessly
+    function normalizeSheetRows(rows) {
+      return rows
+        .map((row, idx) => {
+          const rawName = String(
+            row['ឈ្មោះអ្នកចូលរួម'] ?? row['ឈ្មោះភ្ញៀវ'] ?? row['ឈ្មោះ'] ?? row.name ?? row.guestName ?? row['Guest Name'] ?? ''
+          ).trim();
+          if (!rawName || rawName.startsWith('សរុបរួម')) return null;
+
+          const rawMethod = String(
+            row['ប្រតិបត្តិការ'] ?? row['ប្រភេទប្រតិបត្តិការ'] ?? row['ប្រភេទ'] ?? row['វិធីទូទាត់'] ?? row.method ?? row.type ?? row.paymentMethod ?? 'សាច់ប្រាក់'
+          ).trim();
+          const method = rawMethod.toUpperCase().includes('QR') ? 'QR' : 'សាច់ប្រាក់';
+
+          const rawCurr = String(row['រូបិយប័ណ្ណ'] ?? row.currency ?? row.Currency ?? '').trim().toUpperCase();
+          const usdAmt = parseFloat(String(row['ទឹកប្រាក់ ($)'] ?? row['ប្រាក់ដុល្លារ ($)'] ?? row.usd ?? row.USD ?? 0).replace(/[^0-9.-]/g, '')) || 0;
+          const khrAmt = parseFloat(String(row['ទឹកប្រាក់ (៛)'] ?? row['ប្រាក់រៀល (៛)'] ?? row.khr ?? row.KHR ?? 0).replace(/[^0-9.-]/g, '')) || 0;
+          const genericAmt = parseFloat(String(row['ទឹកប្រាក់'] ?? row.amount ?? row.Amount ?? 0).replace(/[^0-9.-]/g, '')) || 0;
+
+          let currency = 'USD';
+          let amount = 0;
+
+          if (khrAmt > 0 && usdAmt === 0) {
+            currency = 'KHR';
+            amount = khrAmt;
+          } else if (usdAmt > 0) {
+            currency = 'USD';
+            amount = usdAmt;
+          } else if (rawCurr.includes('KHR') || rawCurr.includes('រៀល')) {
+            currency = 'KHR';
+            amount = genericAmt;
+          } else if (genericAmt > 0) {
+            currency = 'USD';
+            amount = genericAmt;
+          }
+
+          const dateVal = String(
+            row['ម៉ោងកត់ត្រា'] ?? row['កាលបរិច្ឆេទ'] ?? row.timestamp ?? row.date ?? row.Timestamp ?? row.Date ?? ''
+          ).trim();
+
+          const noteVal = String(
+            row['កំណត់ចំណាំ'] ?? row.note ?? row.Note ?? ''
+          ).trim();
+
+          const serialNum = Number(row['ល.រ'] ?? row.rowNumber ?? (idx + 1)) || (idx + 1);
+          const rawId = String(row['ID'] ?? row.id ?? row.Id ?? '').trim();
+          const deterministicId = rawId || `LEGACY-${encodeURIComponent(rawName).slice(0, 16)}-${currency}-${amount}-${idx}`;
+
+          return {
+            id: deterministicId,
+            rowNumber: serialNum,
+            name: rawName,
+            method,
+            currency,
+            amount,
+            usd: currency === 'USD' ? amount : 0,
+            khr: currency === 'KHR' ? amount : 0,
+            note: noteVal,
+            date: dateVal,
+            timestamp: dateVal,
+            synced: true,
+            syncing: false,
+            syncError: null
+          };
+        })
+        .filter(Boolean);
+    }
+
+    // 5-Second Auto-Reload Timer
+    function startAutoReloadLoop() {
+      setInterval(() => {
+        if (!appState.autoSyncEnabled) return;
+        appState.countdown--;
+        if (appState.countdown <= 0) {
+          appState.countdown = 5;
+          fetchFromGoogleSheet(true);
+        }
+        updateAutoCountdownUI();
+      }, 1000);
+    }
+    // Modal Diagnostic Test (Live Read + Write + Verify + Cleanup)
+    async function testBackendConnection() {
+      const btn = document.getElementById('testConnectionBtn');
+      const panel = document.getElementById('diagnosticPanel');
+      const diagTitle = document.getElementById('diagTitle');
+      const diagStatus = document.getElementById('diagStatus');
+      const diagLatency = document.getElementById('diagLatency');
+      const diagRows = document.getElementById('diagRows');
+      const diagMessage = document.getElementById('diagMessage');
+
+      btn.disabled = true;
+      btn.textContent = 'កំពុងតេស្ត Read & Write ទៅ Sheet1...';
+      panel.classList.remove('hidden');
+      diagTitle.textContent = 'កំពុងតេស្តការអាន និង ការរក្សាទុកទៅ Google Sheet...';
+
+      const readResult = await fetchFromGoogleSheet(false);
+      if (!readResult) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>តេស្តការតភ្ជាប់ & បញ្ជូនទិន្នន័យសាកល្បង (Test Connection)</span>';
+        diagTitle.textContent = '❌ មិនអាចភ្ជាប់ទៅ Google Apps Script បានទេ';
+        diagStatus.textContent = 'Network / CORS Error';
+        diagLatency.textContent = '-- ms';
+        diagRows.textContent = `${appState.records.length} (Local)`;
+        diagMessage.textContent = 'សូមពិនិត្យ Web App URL និងប្រាកដថាបាន Deploy ជា Web App ដែលអនុញ្ញាតឱ្យ "Anyone" ចូលប្រើប្រាស់។';
+        return;
+      }
+
+      // Perform live write + verify + cleanup test
+      const testId = `WG-TEST-${Date.now()}`;
+      const testRecord = {
+        id: testId,
+        rowNumber: readResult.count + 1,
+        name: 'តេស្តប្រព័ន្ធ (Test)',
+        method: 'QR',
+        currency: 'USD',
+        amount: 1,
+        usd: 1,
+        khr: 0,
+        timestamp: formatKhmerSheetTimestamp(new Date())
+      };
+
+      try {
+        await sendToGoogleSheet('add', testRecord);
+        const sep = appState.gasUrl.includes('?') ? '&' : '?';
+        const verifyRes = await fetch(`${appState.gasUrl}${sep}action=read&t=${Date.now()}`, {
+          method: 'GET',
+          redirect: 'follow',
+          cache: 'no-store'
+        });
+        const verifyJson = JSON.parse((await verifyRes.text()).trim());
+        const verifyRows = normalizeSheetRows(extractRowsFromResponse(verifyJson) || []);
+        const foundInSheet = verifyRows.some(r => r.id === testId);
+
+        if (foundInSheet) {
+          // Clean up test row immediately
+          await sendToGoogleSheet('delete', testRecord);
+          hideDeploymentBanner();
+          diagTitle.textContent = '✅ ការតភ្ជាប់ & ការរក្សាទុកជោគជ័យ 100%! (Read + Write Verified)';
+          diagStatus.textContent = `HTTP ${readResult.status} OK`;
+          diagLatency.textContent = `${readResult.latencyMs} ms`;
+          diagRows.textContent = `${readResult.count} ជួរ`;
+          diagMessage.textContent = 'ប្រព័ន្ធបានសាកល្បងបញ្ជូន និងលុបទិន្នន័យសាកល្បងក្នុង Sheet1 បានយ៉ាងជោគជ័យ! រាល់ការចុច Save នឹងរក្សាទុកចូល Google Sheet ភ្លាមៗ។';
+          showToast('តេស្តការតភ្ជាប់ និង រក្សាទុកក្នុង Sheet1 ជោគជ័យ 100%!', 'success');
+        } else {
+          showDeploymentBanner();
+          diagTitle.textContent = '⚠️ អានទិន្នន័យបាន ប៉ុន្តែមិនទាន់រក្សាទុកចូល Sheet1 ទេ!';
+          diagStatus.textContent = `HTTP ${readResult.status} (Old Code.gs)`;
+          diagLatency.textContent = `${readResult.latencyMs} ms`;
+          diagRows.textContent = `${readResult.count} ជួរ`;
+          diagMessage.textContent = 'សូមចុច "ចម្លងកូដ Code.gs" ខាងក្រោម បិទភ្ជាប់ក្នុង Apps Script Editor រួចចុច Deploy > New deployment (ឬ Manage deployments > Edit > New version)។';
+        }
+      } catch (err) {
+        diagTitle.textContent = '⚠️ មានបញ្ហាកំឡុងពេលតេស្តបញ្ជូនទិន្នន័យ';
+        diagStatus.textContent = 'Write Error';
+        diagLatency.textContent = `${readResult.latencyMs} ms`;
+        diagRows.textContent = `${readResult.count} ជួរ`;
+        diagMessage.textContent = String(err.message || err);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>តេស្តការតភ្ជាប់ (Test Read/Write)</span>';
+      }
+    }
+
+    async function initSheetHeaders() {
+      const btn = document.getElementById('initSheetBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'កំពុងបង្កើតក្បាលតារាង...';
+      }
+
+      try {
+        const res = await sendToGoogleSheet('init');
+        if (res && res.ok) {
+          hideDeploymentBanner();
+          showToast('បានបង្កើតក្បាលតារាង ៧ ជួរឈរក្នុង test-1 / Sheet1 រួចរាល់!', 'success');
+          await fetchFromGoogleSheet(false);
+        }
+      } catch (err) {
+        showToast('មិនអាចបង្កើតក្បាលតារាងបានទេ! សូមពិនិត្យ Web App URL។', 'warning');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>បង្កើតក្បាលតារាង (Init Sheet1)</span>';
+        }
+      }
+    }
+
+    function toggleAutoSync() {
+      appState.autoSyncEnabled = !appState.autoSyncEnabled;
+      if (appState.autoSyncEnabled) {
+        appState.countdown = 5;
+        showToast('បានបើក Auto-Reload រៀងរាល់ 5 វិនាទី', 'info');
+      } else {
+        showToast('បានផ្អាក Auto-Reload បណ្តោះអាសន្ន', 'info');
+      }
+      updateAutoCountdownUI();
+    }
+
+    function updateAutoCountdownUI() {
+      const badge = document.getElementById('autoCountdownBadge');
+      const pillBtn = document.getElementById('autoReloadPillBtn');
+      const cardBtn = document.getElementById('cardAutoToggleBtn');
+
+      if (appState.autoSyncEnabled) {
+        if (badge) badge.textContent = `Auto: ${appState.countdown}s`;
+        if (pillBtn) {
+          pillBtn.className = 'flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#C7F249] hover:bg-[#B6E635] text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer';
+        }
+        if (cardBtn) {
+          cardBtn.textContent = `Auto: ${appState.countdown}s ON`;
+          cardBtn.className = 'px-3 py-1 rounded-full bg-[#C7F249] border border-[#1E1F1D]/15 text-[11px] font-bold text-[#1E1F1D] cursor-pointer';
+        }
+      } else {
+        if (badge) badge.textContent = 'Auto: OFF';
+        if (pillBtn) {
+          pillBtn.className = 'flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F2F3EE] hover:bg-[#E5E6E0] text-xs font-bold text-[#666960] transition-colors cursor-pointer';
+        }
+        if (cardBtn) {
+          cardBtn.textContent = 'Auto: OFF';
+          cardBtn.className = 'px-3 py-1 rounded-full bg-[#F2F3EE] border border-[#E5E6E0] text-[11px] font-bold text-[#666960] cursor-pointer';
+        }
+      }
+    }
+
+    function manualSyncNow() {
+      const bell = document.getElementById('headerBellSvg');
+      if (bell) {
+        bell.classList.add('rotate-12', 'scale-110');
+        setTimeout(() => bell.classList.remove('rotate-12', 'scale-110'), 350);
+      }
+      appState.countdown = 5;
+      updateAutoCountdownUI();
+      flushSyncQueue().then(() => fetchFromGoogleSheet(false));
+    }
+
+    async function syncAllRecordsToSheet() {
+      if (appState.records.length === 0) {
+        showToast('មិនទាន់មានទិន្នន័យសម្រាប់បញ្ជូនទៅ Sheet ទេ!', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('syncAllBtn');
+      btn.disabled = true;
+      btn.textContent = 'កំពុងបញ្ជូនទិន្នន័យទាំងអស់...';
+
+      appState.activeWrites++;
+      appState.lastWriteTimestamp = Date.now();
+
+      try {
+        // Send in chronological order (oldest first)
+        const ordered = [...appState.records].reverse();
+        await sendToGoogleSheet('sync_all', null, ordered);
+        appState.records.forEach(r => { r.synced = true; });
+        appState.syncQueue = [];
+        saveRecordsLocally();
+        saveQueueLocally();
+        renderGuestListTable();
+        setConnectionStatusUI(true, '● Sync All ជោគជ័យ');
+        document.getElementById('cardLastSyncTime').textContent = new Date().toLocaleTimeString('en-GB');
+        showToast(`បានបញ្ជូនទិន្នន័យទាំងអស់ (${ordered.length} នាក់) ទៅ Google Sheet!`, 'success');
+      } catch (err) {
+        enqueueSyncOperation('sync_all', null, [...appState.records].reverse());
+        showToast('បានដាក់ចូល Queue រង់ចាំបញ្ជូនទៅ Google Sheet!', 'warning');
+      } finally {
+        appState.activeWrites = Math.max(0, appState.activeWrites - 1);
+        appState.lastWriteTimestamp = Date.now();
+        btn.disabled = false;
+        btn.innerHTML = '<span>បញ្ជូនទិន្នន័យទាំងអស់ទៅ Sheet (Sync All)</span>';
+      }
+    }
+
+    // =========================================================================
+    // 10. ABA' KHQR MODAL & CLIPBOARD HELPERS
+    // =========================================================================
+    function openQrModal() {
+      const modal = document.getElementById('qrModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeQrModal() {
+      const modal = document.getElementById('qrModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function showCustomQrImage(dataUrl) {
+      const img = document.getElementById('customQrPreviewImg');
+      const defaultSvg = document.getElementById('defaultAbaQrSvg');
+      if (img && defaultSvg) {
+        img.src = dataUrl;
+        img.classList.remove('hidden');
+        defaultSvg.classList.add('hidden');
+      }
+    }
+
+    function handleQrFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const dataUrl = e.target.result;
+        try {
+          localStorage.setItem(STORAGE_KEYS.CUSTOM_QR, dataUrl);
+        } catch (err) {
+          console.warn('Could not persist custom QR to localStorage:', err);
+        }
+        showCustomQrImage(dataUrl);
+        showToast('បានប្តូររូបភាព QR ផ្ទាល់ខ្លួនរួចរាល់!', 'success');
+        event.target.value = '';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetDefaultQr() {
+      localStorage.removeItem(STORAGE_KEYS.CUSTOM_QR);
+      const img = document.getElementById('customQrPreviewImg');
+      const defaultSvg = document.getElementById('defaultAbaQrSvg');
+      if (img && defaultSvg) {
+        img.src = '';
+        img.classList.add('hidden');
+        defaultSvg.classList.remove('hidden');
+      }
+      showToast('បានត្រឡប់ទៅ ABA QR ដើម (SOTHEARA NANG)', 'info');
+    }
+
+    function copyTextToClipboard(text, label = 'អត្ថបទ') {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(`បានចម្លង៖ ${label}`, 'success');
+      } catch (err) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast(`បានចម្លង៖ ${label}`, 'success');
+          }).catch(() => {
+            showToast('មិនអាចចម្លងបានទេ!', 'warning');
+          });
+        } else {
+          showToast('មិនអាចចម្លងបានទេ!', 'warning');
+        }
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    // =========================================================================
+    // 11. EDITORIAL TOAST NOTIFICATIONS & HTML ESCAPING
+    // =========================================================================
+    function showToast(message, type = 'success') {
+      const stack = document.getElementById('toastStack');
+      const el = document.createElement('div');
+
+      const iconMarkup = type === 'warning'
+        ? `<svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+             <circle cx="16" cy="16" r="10" fill="#FDE047" stroke="#1E1F1D" stroke-width="1.75"/>
+             <path d="M16 11V17M16 21H16.01" stroke="#1E1F1D" stroke-width="2" stroke-linecap="round"/>
+           </svg>`
+        : `<svg class="w-6 h-6 editorial-icon" viewBox="0 0 32 32" fill="none">
+             <circle cx="17.5" cy="11" r="6.5" fill="#C7F249" stroke="#1E1F1D" stroke-width="1.75"/>
+             <path d="M14.5 11L16.5 13L20.8 8.7" stroke="#1E1F1D" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+             <path d="M6 21.5C7.5 19.5 10.5 19.5 13 21H19.5C21 21 22 22 22 23.2C22 24.4 21 25 19.5 25H13.5" fill="#FFFFFF" stroke="#1E1F1D" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>`;
+
+      el.className = 'toast-enter pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#FFFFFF] border border-[#1E1F1D]/20 shadow-shell text-xs sm:text-sm font-bold text-[#1E1F1D]';
+      el.innerHTML = `
+        <div class="shrink-0">${iconMarkup}</div>
+        <div class="flex-1 leading-snug">${escapeHtml(message)}</div>
+      `;
+
+      stack.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+        el.style.transition = 'all 0.2s ease';
+        setTimeout(() => el.remove(), 220);
+      }, 3200);
+    }
+
+    function escapeHtml(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
