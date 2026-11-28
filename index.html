@@ -112,8 +112,9 @@
               <circle cx="11" cy="11" r="7" />
               <path d="M20 20L16.2 16.2" />
             </svg>
-            <input id="searchInput" type="text" oninput="handleSearchInput(this.value)" placeholder="ស្វែងរកភ្ញៀវ..." class="w-full h-9 pl-9 pr-10 rounded-full bg-[#FFFFFF] border border-[#E5E7EB] focus:border-[#1E1F1D] text-xs font-medium text-[#1E1F1D] placeholder:text-[#8A8D84] outline-none transition-colors" />
-            <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md bg-[#F2F3EE] border border-[#E2E4DC] text-[10px] font-bold text-[#5E6159] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">⌘K</kbd>
+            <input id="searchInput" type="text" oninput="handleSearchInput(this.value)" placeholder="ស្វែងរកភ្ញៀវ..." class="w-full h-9 pl-9 pr-12 rounded-full bg-[#FFFFFF] border border-[#E5E7EB] focus:border-[#1E1F1D] text-xs font-medium text-[#1E1F1D] placeholder:text-[#8A8D84] outline-none transition-colors" />
+            <button id="clearSearchInputBtn" type="button" onclick="resetTableFiltersAndSearch()" title="សម្អាតការស្វែងរក" class="hidden w-5 h-5 rounded-full bg-[#ECEEE8] hover:bg-[#DCDED8] text-[10px] font-bold text-[#1E1F1D] absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer">✕</button>
+            <kbd id="searchShortcutKbd" class="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md bg-[#F2F3EE] border border-[#E2E4DC] text-[10px] font-bold text-[#5E6159] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">⌘K</kbd>
           </div>
 
           <button type="button" onclick="openGuestDisplayView(false)" title="បើកអេក្រង់ Display ជូនភ្ញៀវមើល" class="h-9 px-3.5 rounded-full bg-[#1E1F1D] hover:bg-[#31332F] text-white flex items-center gap-2 text-xs font-bold transition-colors cursor-pointer shrink-0 shadow-2xs">
@@ -345,9 +346,10 @@
 
               <!-- STEP 3: AMOUNT INPUT + QUICK PRESETS + NOTE -->
               <div class="space-y-2.5">
-                <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
                   <label for="giftAmount" class="text-xs font-bold text-[#1E1F1D]">៣. ទឹកប្រាក់ចំណងដៃ *</label>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <button id="khrThousandHelperBtn" type="button" onclick="multiplyGiftAmountByThousand()" class="hidden px-2.5 py-0.5 rounded-full bg-[#1E1F1D] hover:bg-[#31332F] text-[#C7F249] text-[11px] font-extrabold tabular-nums cursor-pointer"></button>
                     <span id="amountEquivalentHint" class="hidden px-2 py-0.5 rounded-md bg-white/80 text-[11px] font-bold text-[#1E1F1D] tabular-nums"></span>
                     <span id="amountCurrencyHint" class="text-[11px] font-bold text-[#384C61]">គិតជាប្រាក់ដុល្លារ ($)</span>
                   </div>
@@ -510,16 +512,23 @@
               <table class="w-full text-left border-collapse">
                 <thead>
                   <tr class="bg-[#F7F7F5] border-b border-[#E5E7EB] text-[11px] font-bold uppercase tracking-wider text-[#5E6159]">
-                    <th class="py-3 pl-5 pr-2 w-12">ល.រ</th>
-                    <th class="py-3 px-3">ឈ្មោះភ្ញៀវ</th>
-                    <th class="py-3 px-3">វិធីទូទាត់</th>
-                    <th class="py-3 px-3 text-right">ទឹកប្រាក់</th>
+                    <th class="py-3 pl-3.5 sm:pl-5 pr-1.5 w-11">ល.រ</th>
+                    <th class="py-3 px-2.5 sm:px-3">ឈ្មោះភ្ញៀវ</th>
+                    <th class="py-3 px-2 sm:px-3">វិធីទូទាត់</th>
+                    <th class="py-3 px-2.5 sm:px-3 text-right">ទឹកប្រាក់</th>
                     <th class="py-3 px-3 hidden md:table-cell">ម៉ោងកត់ត្រា</th>
-                    <th class="py-3 pl-2 pr-5 text-right">សកម្មភាព</th>
+                    <th class="py-3 pl-1.5 pr-3.5 sm:pr-5 text-right">សកម្មភាព</th>
                   </tr>
                 </thead>
                 <tbody id="guestTableBody" class="divide-y divide-[#ECEEE8] text-sm"></tbody>
               </table>
+            </div>
+            <div id="guestTableLoadMoreBar" class="hidden px-5 py-3.5 bg-[#F7F7F5]/80 border-t border-[#E5E7EB] flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span id="guestTableLoadMoreInfo" class="font-bold text-[#5E6159]"></span>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="loadMoreGuestRows()" class="h-8 px-3.5 rounded-full bg-[#C7F249] hover:bg-[#B9E832] border border-[#1E1F1D] font-bold text-[#1E1F1D] cursor-pointer">+ បង្ហាញ ១០០ នាក់បន្ថែម</button>
+                <button type="button" onclick="showAllGuestRows()" class="h-8 px-3.5 rounded-full bg-white hover:bg-[#ECEEE8] border border-[#E5E7EB] font-bold text-[#1E1F1D] cursor-pointer">បង្ហាញទាំងអស់</button>
+              </div>
             </div>
           </section>
         </div>
@@ -891,15 +900,23 @@
         </div>
 
         <div id="abaTabPanel_m3_gmail" class="aba-tab-panel hidden space-y-3">
-          <div class="p-4 rounded-2xl bg-[#F7F7F5] border border-[#E5E7EB] space-y-3">
+          <div class="p-4 rounded-2xl sky-gradient-card border border-[#BFDCFA] space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <h4 class="text-sm sm:text-base font-bold text-[#1E1F1D]">វិធីទី ៣៖ ភ្ជាប់សារ Email ជូនដំណឹងពី ABA Bank (Gmail Cloud Trigger 1s)</h4>
-              <button type="button" onclick="copyGmailTriggerFunction()" class="h-9 px-3.5 rounded-xl bg-[#1E1F1D] text-[#C7F249] text-xs font-bold cursor-pointer">ចម្លងកូដ Gmail Trigger (1s)</button>
+              <h4 class="text-sm sm:text-base font-bold text-[#1E1F1D]">វិធីទី ៣៖ ភ្ជាប់សារ Email ជូនដំណឹងពី ABA Bank (Gmail Cloud Trigger)</h4>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button type="button" onclick="testGmailCloudWorkerNow()" class="h-9 px-3.5 rounded-xl bg-[#1E1F1D] hover:bg-[#31332F] text-[#C7F249] text-xs font-bold cursor-pointer">▶ ពិនិត្យ &amp; តេស្ត Gmail ឥឡូវនេះ</button>
+                <button data-superadmin-only="true" type="button" onclick="copyCodeGs()" class="h-9 px-3.5 rounded-xl bg-[#C7F249] hover:bg-[#B9E832] border border-[#1E1F1D] text-xs font-bold text-[#1E1F1D] cursor-pointer">ចម្លង Code.gs ពេញលេញ</button>
+              </div>
             </div>
-            <p class="text-xs text-[#5E6159] leading-relaxed">
-              រាល់ពេលភ្ញៀវស្កេន ABA KHQR ធនាគារ ABA តែងតែផ្ញើ Email ជូនដំណឹងមកកាន់ Gmail របស់អ្នកភ្លាមៗ។ មុខងារ <code>setupAbaEmailTrigger()</code> ដែលមានស្រាប់ក្នុង <strong>Code.gs</strong> នឹងត្រួតពិនិត្យ Gmail រៀងរាល់ <strong>១ វិនាទីម្តង</strong> លើ Cloud ដោយស្វ័យប្រវត្តិ និងរក្សាទុកតែសារ Email ថ្មីចុងក្រោយបំផុត ១ ប៉ុណ្ណោះ (មិនទាញ Email ចាស់ៗឡើយ)។
+            <p class="text-xs text-[#384C61] leading-relaxed">
+              រាល់ពេលភ្ញៀវស្កេន ABA KHQR ធនាគារ ABA តែងតែផ្ញើ Email ជូនដំណឹងមកកាន់ Gmail របស់អ្នកភ្លាមៗ។ មុខងារ <code>setupAbaEmailTrigger()</code> ដែលមានស្រាប់ក្នុង <strong>Code.gs ពេញលេញ</strong> នឹងត្រួតពិនិត្យប្រអប់សារ Gmail លើ Cloud ដោយស្វ័យប្រវត្តិ និងរក្សាទុកតែសារ Email ថ្មីចុងក្រោយបំផុត ១ ប៉ុណ្ណោះ (មិនទាញ Email ចាស់ៗឡើយ)។
             </p>
-            <button data-superadmin-only="true" type="button" onclick="copyCodeGs()" class="h-9 px-3.5 rounded-xl bg-[#C7F249] border border-[#1E1F1D] text-xs font-bold text-[#1E1F1D] cursor-pointer">ចម្លង Code.gs ពេញលេញ</button>
+            <div class="p-3 rounded-xl bg-white/95 border border-[#B8D8FA] text-xs text-[#1E1F1D] space-y-1">
+              <div class="font-bold">⚠️ ចំណាំសំខាន់ដើម្បីឱ្យ Gmail Trigger ដំណើរការ៖</div>
+              <div>១. ចម្លង <strong>Code.gs ពេញលេញ</strong> ដាក់ក្នុង Apps Script → ចុច <strong>Deploy → New deployment (Web app, Anyone)</strong>។</div>
+              <div>២. ជ្រើសមុខងារ <code>setupAbaEmailTrigger</code> នៅរបារខាងលើ → ចុច <strong>Run (▶)</strong> រួចចុច <strong>Allow</strong> អនុញ្ញាតសិទ្ធិអាន Gmail។</div>
+            </div>
+            <div id="gmailCloudDiagBox" class="p-3 rounded-xl bg-[#1E1F1D] text-[#C7F249] text-[11px] font-mono whitespace-pre-wrap">Gmail Cloud Worker: ចុច «ពិនិត្យ &amp; តេស្ត Gmail ឥឡូវនេះ» ដើម្បីពិនិត្យស្ថានភាព Trigger និងសាកល្បងចាប់ Email ចុងក្រោយ</div>
           </div>
         </div>
 
@@ -1454,6 +1471,8 @@
       records: [],
       entrySeqCounter: 0,
       sortOrder: 'LATEST_FIRST',
+      tableVisibleLimit: 100,
+      lastRenderedSignature: '',
       newlyAddedHighlightId: null,
       filter: 'ALL',
       searchQuery: '',
@@ -1990,12 +2009,16 @@
       const val = input.value;
       if (clearBtn) clearBtn.classList.toggle('hidden', val.length === 0);
 
-      const trimmed = val.trim().toLowerCase();
-      if (trimmed.length >= 2 && !state.editingRecordId) {
-        const matches = state.records.filter((r) => r.name.trim().toLowerCase() === trimmed);
+      const honorificsRegex = /^(លោកជំទាវ|ឯកឧត្តម|លោកស្រី|អ្នកនាង|កញ្ញា|គ្រួសារ|លោក|បង|អ៊ំ)\s+/;
+      const strippedCore = val.trim().replace(honorificsRegex, '').trim().toLowerCase();
+      if (strippedCore.length >= 2 && !state.editingRecordId) {
+        const matches = state.records.filter((r) => {
+          const existingCore = String(r.name || '').trim().replace(honorificsRegex, '').trim().toLowerCase();
+          return existingCore === strippedCore || String(r.name || '').trim().toLowerCase() === val.trim().toLowerCase();
+        });
         if (matches.length > 0 && dupBanner && dupText) {
           const prev = matches[0];
-          const amtStr = prev.currency === 'USD' ? `$${Number(prev.amount).toLocaleString('en-US')}` : `${Number(prev.amount).toLocaleString('en-US')} ៛`;
+          const amtStr = formatMoneyAmount(prev.amount, prev.currency);
           dupText.textContent = `⚠️ មានឈ្មោះ «${prev.name}» រួចហើយ (${amtStr}) — តើចង់កត់ត្រាបន្ថែមមែនទេ?`;
           dupBanner.classList.remove('hidden');
         } else if (dupBanner) {
@@ -2024,6 +2047,7 @@
     }
 
     function handleGuestNameKeydown(event) {
+      if (event.isComposing || event.keyCode === 229) return;
       if (event.key === 'Enter') {
         event.preventDefault();
         const amtInput = document.getElementById('giftAmount');
@@ -2108,22 +2132,43 @@
       const raw = toAsciiDigits(inputEl.value).replace(/[^0-9.]/g, '');
       const clearBtn = document.getElementById('clearGiftAmountBtn');
       const eqHint = document.getElementById('amountEquivalentHint');
+      const khrHelperBtn = document.getElementById('khrThousandHelperBtn');
       if (!raw) {
         inputEl.value = '';
         if (clearBtn) clearBtn.classList.add('hidden');
         if (eqHint) eqHint.classList.add('hidden');
+        if (khrHelperBtn) khrHelperBtn.classList.add('hidden');
         return;
       }
       inputEl.value = formatTypingDecimalString(raw);
       const num = parseFloat(raw) || 0;
       if (clearBtn) clearBtn.classList.toggle('hidden', inputEl.value.length === 0);
+      if (khrHelperBtn) {
+        if (state.currency === 'KHR' && num > 0 && num < 1000 && Number.isInteger(num)) {
+          khrHelperBtn.textContent = `→ ${(num * 1000).toLocaleString('en-US')} ៛?`;
+          khrHelperBtn.classList.remove('hidden');
+        } else {
+          khrHelperBtn.classList.add('hidden');
+        }
+      }
       if (eqHint && num > 0) {
         eqHint.textContent = state.currency === 'USD'
-          ? `≈ ${(num * USD_TO_KHR_RATE).toLocaleString('en-US')} ៛`
-          : `≈ $${(num / USD_TO_KHR_RATE).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+          ? `≈ ${Math.round(num * USD_TO_KHR_RATE).toLocaleString('en-US')} ៛`
+          : `≈ ${formatMoneyAmount(num / USD_TO_KHR_RATE, 'USD')}`;
         eqHint.classList.remove('hidden');
       } else if (eqHint) {
         eqHint.classList.add('hidden');
+      }
+    }
+
+    function multiplyGiftAmountByThousand() {
+      const amtInput = document.getElementById('giftAmount');
+      if (!amtInput) return;
+      const num = parseFormattedNumber(amtInput.value);
+      if (num > 0) {
+        amtInput.value = formatNumberWithCommas(Math.round(num * 1000));
+        handleGiftAmountInput(amtInput);
+        amtInput.focus();
       }
     }
 
@@ -2132,9 +2177,11 @@
       if (input) { input.value = ''; if (refocus) input.focus(); }
       document.getElementById('clearGiftAmountBtn')?.classList.add('hidden');
       document.getElementById('amountEquivalentHint')?.classList.add('hidden');
+      document.getElementById('khrThousandHelperBtn')?.classList.add('hidden');
     }
 
     function handleGiftAmountKeydown(event) {
+      if (event.isComposing || event.keyCode === 229) return;
       if (event.key === 'Enter') {
         event.preventDefault();
         handleQuickEntrySubmit(event);
@@ -2229,6 +2276,7 @@
     }
 
     function handleGuestNoteKeydown(event) {
+      if (event.isComposing || event.keyCode === 229) return;
       if (event.key === 'Enter') {
         event.preventDefault();
         handleQuickEntrySubmit(event);
@@ -2508,6 +2556,12 @@
 
     function handleSearchInput(val) {
       state.searchQuery = String(val || '').trim().toLowerCase();
+      state.tableVisibleLimit = 100;
+      const clearBtn = document.getElementById('clearSearchInputBtn');
+      const kbd = document.getElementById('searchShortcutKbd');
+      const hasText = state.searchQuery.length > 0;
+      if (clearBtn) clearBtn.classList.toggle('hidden', !hasText);
+      if (kbd) kbd.classList.toggle('hidden', hasText);
       renderGuestTable();
     }
 
@@ -2525,6 +2579,7 @@
 
     function setTableFilter(filterKey) {
       state.filter = filterKey || 'ALL';
+      state.tableVisibleLimit = 100;
       document.querySelectorAll('.filter-pill').forEach((btn) => {
         const active = btn.getAttribute('data-filter') === state.filter;
         btn.className = active
@@ -2536,7 +2591,7 @@
 
     function getFilteredRecords() {
       const sorted = sortRecordsLatestFirst(state.records);
-      const qAscii = toAsciiDigits(state.searchQuery).replace(/,/g, '');
+      const qAscii = toAsciiDigits(state.searchQuery).replace(/[,$៛]/g, '').trim();
       return sorted.filter((r) => {
         if (state.filter === 'CASH' && isQrRecord(r)) return false;
         if (state.filter === 'QR' && !isQrRecord(r)) return false;
@@ -2547,7 +2602,7 @@
         if (state.searchQuery) {
           const amtFormatted = formatMoneyAmount(r.amount, r.currency);
           const hay = `${r.name} ${r.note || ''} ${r.method} ${r.amount} ${amtFormatted} ${r.timestamp || ''}`.toLowerCase();
-          const hayAscii = toAsciiDigits(hay).replace(/,/g, '');
+          const hayAscii = toAsciiDigits(hay).replace(/[,$៛]/g, '');
           if (!hay.includes(state.searchQuery) && (!qAscii || !hayAscii.includes(qAscii))) return false;
         }
         return true;
@@ -2556,12 +2611,31 @@
 
     function resetTableFiltersAndSearch() {
       state.searchQuery = '';
+      state.tableVisibleLimit = 100;
       const searchEl = document.getElementById('searchInput');
       if (searchEl) searchEl.value = '';
+      document.getElementById('clearSearchInputBtn')?.classList.add('hidden');
+      document.getElementById('searchShortcutKbd')?.classList.remove('hidden');
       setTableFilter('ALL');
     }
 
+    function loadMoreGuestRows() {
+      state.tableVisibleLimit += 100;
+      renderGuestTable();
+    }
+
+    function showAllGuestRows() {
+      state.tableVisibleLimit = 999999;
+      renderGuestTable();
+    }
+
+    function computeRecordsSignature(list) {
+      if (!Array.isArray(list) || list.length === 0) return '0';
+      return `${list.length}|${list.map((r) => `${r.id}:${r.name}:${r.amount}:${r.currency}:${r.method}:${r.note}:${r.synced ? 1 : 0}:${r.entryOrder}`).join(';')}`;
+    }
+
     function renderAll() {
+      state.lastRenderedSignature = computeRecordsSignature(state.records);
       renderKpisAndAnalytics();
       renderGuestTable();
       renderGuestDisplayList();
@@ -2588,16 +2662,16 @@
       const khrTotal = khrCash + khrQr;
       const totalGuests = state.records.length;
 
-      document.getElementById('kpiUsdTotal').textContent = `$${usdTotal.toLocaleString('en-US')}`;
-      document.getElementById('kpiUsdCash').textContent = `$${usdCash.toLocaleString('en-US')}`;
-      document.getElementById('kpiUsdQr').textContent = `$${usdQr.toLocaleString('en-US')}`;
+      document.getElementById('kpiUsdTotal').textContent = formatMoneyAmount(usdTotal, 'USD');
+      document.getElementById('kpiUsdCash').textContent = formatMoneyAmount(usdCash, 'USD');
+      document.getElementById('kpiUsdQr').textContent = formatMoneyAmount(usdQr, 'USD');
       const usdCashPct = usdTotal > 0 ? Math.round((usdCash / usdTotal) * 100) : 50;
       document.getElementById('usdCashBar').style.width = `${usdCashPct}%`;
       document.getElementById('usdQrBar').style.width = `${100 - usdCashPct}%`;
 
-      document.getElementById('kpiKhrTotal').textContent = `${khrTotal.toLocaleString('en-US')} ៛`;
-      document.getElementById('kpiKhrCash').textContent = `${khrCash.toLocaleString('en-US')} ៛`;
-      document.getElementById('kpiKhrQr').textContent = `${khrQr.toLocaleString('en-US')} ៛`;
+      document.getElementById('kpiKhrTotal').textContent = formatMoneyAmount(khrTotal, 'KHR');
+      document.getElementById('kpiKhrCash').textContent = formatMoneyAmount(khrCash, 'KHR');
+      document.getElementById('kpiKhrQr').textContent = formatMoneyAmount(khrQr, 'KHR');
       const khrCashPct = khrTotal > 0 ? Math.round((khrCash / khrTotal) * 100) : 50;
       document.getElementById('khrCashBar').style.width = `${khrCashPct}%`;
       document.getElementById('khrQrBar').style.width = `${100 - khrCashPct}%`;
@@ -2670,6 +2744,7 @@
       }
 
       if (filtered.length === 0) {
+        document.getElementById('guestTableLoadMoreBar')?.classList.add('hidden');
         const hasFilter = state.filter !== 'ALL' || Boolean(state.searchQuery);
         const emptyTitle = hasFilter && state.records.length > 0
           ? 'រកមិនឃើញឈ្មោះភ្ញៀវដែលត្រូវនឹងការស្វែងរកទេ'
@@ -2681,8 +2756,20 @@
         return;
       }
 
-      tbody.innerHTML = filtered.map((rec, idx) => {
-        const rowNum = state.sortOrder === 'OLDEST_FIRST' ? (idx + 1) : (filtered.length - idx);
+      const visibleRows = filtered.slice(0, state.tableVisibleLimit);
+      const loadMoreBar = document.getElementById('guestTableLoadMoreBar');
+      const loadMoreInfo = document.getElementById('guestTableLoadMoreInfo');
+      if (loadMoreBar && loadMoreInfo) {
+        if (filtered.length > visibleRows.length) {
+          loadMoreInfo.textContent = `កំពុងបង្ហាញ ${visibleRows.length} នាក់ ក្នុងចំណោម ${filtered.length} នាក់`;
+          loadMoreBar.classList.remove('hidden');
+        } else {
+          loadMoreBar.classList.add('hidden');
+        }
+      }
+
+      tbody.innerHTML = visibleRows.map((rec, idx) => {
+        const rowNum = idx + 1;
         const qr = isQrRecord(rec);
         const amtText = formatMoneyAmount(rec.amount, rec.currency);
         const syncBadge = rec.synced
@@ -2695,20 +2782,20 @@
         const rowHighlightClass = isNewlyAdded ? 'bg-[#C7F249]/35 hover:bg-[#C7F249]/45 transition-colors' : 'hover:bg-[#F7F7F5]/80 transition-colors';
         const newBadgeHtml = isNewlyAdded ? `<span class="ml-1.5 px-2 py-0.5 rounded-full bg-[#1E1F1D] text-[#C7F249] text-[10px] font-extrabold">ទើបបញ្ចូល</span>` : '';
         const actionButtonsHtml = isSuperAdmin()
-          ? `<div class="inline-flex items-center gap-1.5">
-              <button type="button" onclick="openEditRecordModal('${escapeHtml(rec.id)}')" class="px-2.5 py-1 rounded-lg bg-[#F7F7F5] hover:bg-[#C7F249] border border-[#E5E7EB] text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer">កែ</button>
-              <button type="button" onclick="requestDeleteGuestRecord('${escapeHtml(rec.id)}')" class="px-2.5 py-1 rounded-lg ${isConfirmingDel ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white border-rose-200'} border text-xs font-bold transition-colors cursor-pointer">${isConfirmingDel ? 'បញ្ជាក់លុប?' : 'លុប'}</button>
+          ? `<div class="inline-flex items-center gap-1 sm:gap-1.5">
+              <button type="button" onclick="openEditRecordModal('${escapeHtml(rec.id)}')" class="px-2 sm:px-2.5 py-1 rounded-lg bg-[#F7F7F5] hover:bg-[#C7F249] border border-[#E5E7EB] text-xs font-bold text-[#1E1F1D] transition-colors cursor-pointer">កែ</button>
+              <button type="button" onclick="requestDeleteGuestRecord('${escapeHtml(rec.id)}')" class="px-2 sm:px-2.5 py-1 rounded-lg ${isConfirmingDel ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white border-rose-200'} border text-xs font-bold transition-colors cursor-pointer">${isConfirmingDel ? 'បញ្ជាក់លុប?' : 'លុប'}</button>
             </div>`
-          : `<span class="px-2.5 py-1 rounded-lg bg-[#F7F7F5] text-[11px] font-bold text-[#8A8D84]">បានកត់ត្រា</span>`;
+          : `<span class="px-2 py-1 rounded-lg bg-[#F7F7F5] text-[10px] sm:text-[11px] font-bold text-[#8A8D84]">បានកត់ត្រា</span>`;
 
         return `
           <tr class="${rowHighlightClass}">
-            <td class="py-3.5 pl-5 pr-2 text-xs font-bold text-[#5E6159] tabular-nums"><div class="flex items-center gap-1.5">${syncBadge}<span>${rowNum}</span></div></td>
-            <td class="py-3.5 px-3"><div class="font-bold text-[#1E1F1D]">${escapeHtml(rec.name)}${newBadgeHtml}</div>${noteHtml}${mobileTimeHtml}</td>
-            <td class="py-3.5 px-3"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${qr ? 'bg-[#1E1F1D] text-[#C7F249]' : 'bg-[#ECEEE8] text-[#1E1F1D]'}"><span>${qr ? 'ស្កេន QR' : 'សាច់ប្រាក់'}</span></span></td>
-            <td class="py-3.5 px-3 text-right font-extrabold text-[#1E1F1D] tabular-nums whitespace-nowrap">${amtText}</td>
-            <td class="py-3.5 px-3 hidden md:table-cell text-xs font-mono text-[#5E6159] tabular-nums whitespace-nowrap">${escapeHtml(rec.timestamp || '')}</td>
-            <td class="py-3.5 pl-2 pr-5 text-right whitespace-nowrap">${actionButtonsHtml}</td>
+            <td class="py-3 pl-3.5 sm:pl-5 pr-1.5 text-xs font-bold text-[#5E6159] tabular-nums"><div class="flex items-center gap-1.5">${syncBadge}<span>${rowNum}</span></div></td>
+            <td class="py-3 px-2.5 sm:px-3"><div class="font-bold text-[#1E1F1D] leading-snug">${escapeHtml(rec.name)}${newBadgeHtml}</div>${noteHtml}${mobileTimeHtml}</td>
+            <td class="py-3 px-2 sm:px-3"><span class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold whitespace-nowrap ${qr ? 'bg-[#1E1F1D] text-[#C7F249]' : 'bg-[#ECEEE8] text-[#1E1F1D]'}"><span>${qr ? 'ស្កេន QR' : 'សាច់ប្រាក់'}</span></span></td>
+            <td class="py-3 px-2.5 sm:px-3 text-right font-extrabold text-[#1E1F1D] tabular-nums whitespace-nowrap">${amtText}</td>
+            <td class="py-3 px-3 hidden md:table-cell text-xs font-mono text-[#5E6159] tabular-nums whitespace-nowrap">${escapeHtml(rec.timestamp || '')}</td>
+            <td class="py-3 pl-1.5 pr-3.5 sm:pr-5 text-right whitespace-nowrap">${actionButtonsHtml}</td>
           </tr>
         `;
       }).join('');
@@ -2980,24 +3067,36 @@
       copyTextSafely(curl, 'បានចម្លង cURL Command សម្រាប់តេស្ត Webhook!');
     }
 
-    function copyGmailTriggerFunction() {
-      const code = [
-        "function setupAbaEmailTrigger() {",
-        "  const props = PropertiesService.getScriptProperties();",
-        "  const nowMs = Date.now();",
-        "  props.setProperty('ABA_GMAIL_BASELINE_MS', String(nowMs));",
-        "  props.setProperty('ABA_LAST_MSG_MS', String(nowMs));",
-        "  let label = GmailApp.getUserLabelByName('ABA_Synced');",
-        "  if (!label) label = GmailApp.createLabel('ABA_Synced');",
-        "  const oldThreads = GmailApp.search('(from:ababank.com OR from:payway OR \"PayWay by ABA\" OR \"ABA KHQR\" OR \"ABA PAY\") -label:ABA_Synced newer_than:2d', 0, 50);",
-        "  for (let i = 0; i < oldThreads.length; i++) oldThreads[i].addLabel(label);",
-        "  ScriptApp.getProjectTriggers().forEach(function(t) {",
-        "    if (t.getHandlerFunction() === 'scanGmailAbaAlerts') ScriptApp.deleteTrigger(t);",
-        "  });",
-        "  ScriptApp.newTrigger('scanGmailAbaAlerts').timeBased().everyMinutes(1).create();",
-        "}"
-      ].join('\n');
-      copyTextSafely(code, 'បានចម្លងកូដ setupAbaEmailTrigger()!');
+    async function testGmailCloudWorkerNow() {
+      const diag = document.getElementById('gmailCloudDiagBox');
+      if (diag) diag.textContent = '⏳ កំពុងភ្ជាប់ទៅ Google Apps Script ដើម្បីពិនិត្យ Trigger និងតេស្តអាន Gmail ចុងក្រោយ...';
+      const res = await sendToGasWithFallback('test_gmail_now', {
+        action: 'test_gmail_now',
+        spreadsheetId: state.spreadsheetId || DEFAULT_SPREADSHEET_ID,
+        sheetName: DEFAULT_SHEET_NAME
+      });
+      if (!res || !res.ok) {
+        if (diag) diag.textContent = `❌ មិនអាចភ្ជាប់ទៅ Backend បានទេ៖ ${res && res.error ? res.error : 'Network Error'}`;
+        showToast('មិនអាចភ្ជាប់ទៅ Backend បានទេ!', 'warning');
+        return;
+      }
+      const d = res.data || {};
+      if (d.status !== 'success' && !d.gmailChecked) {
+        if (diag) diag.textContent = '⚠️ Code.gs ក្នុង Apps Script របស់អ្នកនៅជាកំណែចាស់ (មិនទាន់មាន test_gmail_now)!\nសូមចុច «ចម្លង Code.gs ពេញលេញ» → បិទភ្ជាប់ក្នុង Apps Script → Deploy → New deployment រួចចុច Run setupAbaEmailTrigger()។';
+        showToast('សូម Update និង Deploy Code.gs ពេញលេញជាមុនសិន!', 'warning');
+        return;
+      }
+      const lines = [
+        `✅ Gmail Cloud Worker Status: ${d.triggerActive ? 'Trigger សកម្ម (1-minute Cloud Loop)' : '⚠️ មិនទាន់បើក Trigger (សូម Run setupAbaEmailTrigger)'}`,
+        `• ដំណើរការចុងក្រោយ៖ ${d.lastRun || 'ទើបតេស្តឥឡូវនេះ'}`,
+        d.lastError ? `• ⚠️ កំហុសចុងក្រោយ៖ ${d.lastError}` : '• គ្មានកំហុស (No Errors)',
+        d.savedRecord
+          ? `• 🎉 រកឃើញ & រក្សាទុក Email ថ្មី៖ ${d.savedRecord.name} (${d.savedRecord.amount} ${d.savedRecord.currency})`
+          : `• លទ្ធផលស្កេន៖ ${d.message || 'មិនទាន់មាន Email ថ្មីពី ABA ក្នុង Inbox ទេ'}`
+      ];
+      if (diag) diag.textContent = lines.join('\n');
+      if (d.ver) state.remoteSheetVer = String(d.ver);
+      await fetchFromGoogleSheet(true);
     }
 
     function randomizeSimWebhookTranId() {
@@ -3616,10 +3715,16 @@
             if (recId) {
               state.pendingWriteIds.delete(recId);
               const idx = state.records.findIndex((r) => r.id === recId);
-              if (idx !== -1) { state.records[idx].synced = true; state.records[idx].syncing = false; }
+              if (idx !== -1) {
+                state.records[idx].synced = true;
+                state.records[idx].syncing = false;
+                const recentEntry = state.recentlyWrittenMap.get(recId);
+                if (recentEntry) recentEntry.record = { ...state.records[idx] };
+              }
             }
             if (res.data && res.data.ver) state.remoteSheetVer = String(res.data.ver);
             saveRecordsToLocalStorage();
+            state.lastRenderedSignature = computeRecordsSignature(state.records);
             renderGuestTable();
             updateConnectionStatusUI(true);
           } else {
@@ -3682,7 +3787,6 @@
         const sep = baseUrl.includes('?') ? '&' : '?';
         const encodedFull = encodeURIComponent(bodyStr);
         if (action === 'bulk_sync' && Array.isArray(payloadObj.records) && encodedFull.length >= 3000) {
-          // Dynamically pack chunks by encoded URI length (safe for multi-byte Khmer UTF-8 characters)
           const chunks = [];
           let currentChunk = [];
           for (let i = 0; i < payloadObj.records.length; i++) {
@@ -3802,7 +3906,6 @@
       const merged = [];
       const seenIds = new Set();
       const isInitialEmptyHydration = !state.hasCompletedInitialFetch && existingMap.size === 0;
-      const totalRemote = remoteRawList.length;
 
       remoteRawList.forEach((raw, idx) => {
         const norm = normalizeRecord(raw, idx);
@@ -3824,7 +3927,6 @@
           norm.createdAt = existingRec.createdAt || norm.createdAt;
           norm.entryOrder = existingRec.entryOrder || (idx + 1);
         } else if (isInitialEmptyHydration) {
-          // Google Sheet stores oldest guest at Row 2 (idx=0) and newest guest at bottom (idx=totalRemote-1)
           norm.entryOrder = idx + 1;
           if (norm.entryOrder > state.entrySeqCounter) state.entrySeqCounter = norm.entryOrder;
         } else {
@@ -3874,8 +3976,10 @@
         showLiveAbaArrivalBanner(latestNewQrRec, extractTranIdFromRecord(latestNewQrRec), 'ABA Webhook / Cloud Sync');
       }
 
+      const nextSig = computeRecordsSignature(state.records);
+      const hasDataChanged = !state.hasCompletedInitialFetch || nextSig !== state.lastRenderedSignature || newlyArrivedRemote.length > 0;
       state.hasCompletedInitialFetch = true;
-      renderAll();
+      if (hasDataChanged) renderAll();
       if (newlyArrivedRemote.length > 0) notifyOtherTabs();
     }
 
@@ -4007,7 +4111,6 @@
       showToast(`កំពុងបញ្ជូនទិន្នន័យទាំង ${state.records.length} ជួរទៅ Google Sheet...`, 'info');
       state.activeWrites++;
       try {
-        // Always send chronological order (oldest first -> newest at bottom of Google Sheet)
         const chronologicalRecords = state.records.slice().sort((a, b) => {
           const orderDiff = (Number(a.entryOrder) || 0) - (Number(b.entryOrder) || 0);
           if (orderDiff !== 0) return orderDiff;
@@ -4041,10 +4144,9 @@
       const codeLines = [
         "// ===========================================================================",
         "// WEDDING GIFT DASHBOARD — COMPLETE GOOGLE APPS SCRIPT BACKEND (Code.gs)",
-        "// Supports: CRUD, Deduplicated Batch Sync, Blank-Row Safe Sheet Ops,",
-        "//           Chunked RAM Cache (<50ms Delta Sync), Plain-Text Date Guard,",
+        "// Includes: CRUD, Deduplicated Batch Sync, Chunked RAM Cache (<50ms),",
         "//           ABA PayWay Webhook, Android/iOS Push, Telegram 24/7 Webhook,",
-        "//           Gmail 1s Cloud Worker & Resilient Drive/Sheet Auto-Backup",
+        "//           Quota-Safe Gmail Cloud Trigger (1 Latest Email Only) & Auto-Backup",
         "// ===========================================================================",
         "const SPREADSHEET_ID = '" + sheetId + "';",
         "const SHEET_NAME = 'Sheet1';",
@@ -4071,9 +4173,7 @@
         "function openSpreadsheetSafe_(ssId) {",
         "  const targetId = getActiveSpreadsheetId_(ssId);",
         "  if (targetId) {",
-        "    try {",
-        "      return SpreadsheetApp.openById(targetId);",
-        "    } catch (e) {}",
+        "    try { return SpreadsheetApp.openById(targetId); } catch (e) {}",
         "  }",
         "  const active = SpreadsheetApp.getActiveSpreadsheet();",
         "  if (active) return active;",
@@ -4111,9 +4211,7 @@
         "    const params = (e && e.parameter) ? e.parameter : {};",
         "    let payload = Object.assign({}, params, postBody || {});",
         "    if (params.payload) {",
-        "      try {",
-        "        payload = Object.assign({}, payload, JSON.parse(params.payload));",
-        "      } catch (err) {}",
+        "      try { payload = Object.assign({}, payload, JSON.parse(params.payload)); } catch (err) {}",
         "    }",
         "",
         "    const isTgUpdate = Boolean(postBody && typeof postBody.update_id === 'number');",
@@ -4130,7 +4228,7 @@
         "    const verKey = 'ver_' + targetSheetId + '_' + targetSheetName;",
         "    const dataKey = 'dat_' + targetSheetId + '_' + targetSheetName;",
         "",
-        "    // 1. FAST DELTA & CHUNKED RAM CACHE READ (Sub-50ms when unchanged)",
+        "    // 1. FAST DELTA & CHUNKED RAM CACHE READ",
         "    if (action === 'read' || action === 'ping') {",
         "      const currentVer = cache.get(verKey);",
         "      if (currentVer && String(params.sinceVer || '') === currentVer) {",
@@ -4149,7 +4247,31 @@
         "      return jsonOut_({ status: 'success', ver: newVer, cache: 'SHEET_READ', records: records });",
         "    }",
         "",
-        "    // 2. WRITE / WEBHOOK OPERATIONS (Protected by ScriptLock)",
+        "    // 2. GMAIL CLOUD TRIGGER DIAGNOSTICS & IMMEDIATE TEST",
+        "    if (action === 'gmail_status' || action === 'test_gmail_now') {",
+        "      const props = PropertiesService.getScriptProperties();",
+        "      const triggers = ScriptApp.getProjectTriggers();",
+        "      let triggerActive = false;",
+        "      for (let i = 0; i < triggers.length; i++) {",
+        "        if (triggers[i].getHandlerFunction() === 'scanGmailAbaAlerts') triggerActive = true;",
+        "      }",
+        "      let scanResult = { savedRecord: null, message: 'Status checked' };",
+        "      if (action === 'test_gmail_now') {",
+        "        scanResult = runGmailScanCycle_(props, cache, targetSheetId, true);",
+        "      }",
+        "      return jsonOut_({",
+        "        status: 'success',",
+        "        gmailChecked: true,",
+        "        triggerActive: triggerActive,",
+        "        lastRun: props.getProperty('ABA_GMAIL_LAST_RUN') || '',",
+        "        lastError: props.getProperty('ABA_GMAIL_LAST_ERROR') || '',",
+        "        savedRecord: scanResult.savedRecord,",
+        "        message: scanResult.message,",
+        "        ver: cache.get(verKey) || ''",
+        "      });",
+        "    }",
+        "",
+        "    // 3. WRITE / WEBHOOK OPERATIONS (Protected by ScriptLock)",
         "    const lock = LockService.getScriptLock();",
         "    if (!lock.tryLock(15000)) {",
         "      return jsonOut_({ status: 'error', message: 'Server busy (Lock timeout), please retry.' });",
@@ -4202,7 +4324,7 @@
         "        return jsonOut_({ status: 'success', cleared: true, records: [], ver: ver });",
         "      }",
         "",
-        "      // 3. OFFICIAL ABA PAYWAY MERCHANT WEBHOOK",
+        "      // 4. OFFICIAL ABA PAYWAY MERCHANT WEBHOOK",
         "      if (action === 'payway_merchant_webhook') {",
         "        const statusRaw = payload.status;",
         "        const isApproved = statusRaw === undefined || statusRaw === '' || String(statusRaw) === '0' || String(statusRaw).toLowerCase() === 'approved';",
@@ -4236,7 +4358,7 @@
         "        return jsonOut_({ status: 'ignored', reason: 'Zero or invalid amount' });",
         "      }",
         "",
-        "      // 4. ANDROID MACRODROID & IOS SHORTCUTS PUSH NOTIFICATION WEBHOOK",
+        "      // 5. ANDROID MACRODROID & IOS SHORTCUTS PUSH NOTIFICATION WEBHOOK",
         "      if (action === 'aba_push') {",
         "        const rawPush = [payload.title, payload.text, payload.notification, payload.body].filter(Boolean).join(' ').trim();",
         "        const parsed = parsePayWayMessage_(rawPush, 'push_' + Date.now());",
@@ -4250,13 +4372,11 @@
         "        return jsonOut_({ status: 'ignored', reason: 'No ABA amount detected in push text' });",
         "      }",
         "",
-        "      // 5. TELEGRAM BOT 24/7 CLOUD WEBHOOK (With Update-ID Deduplication)",
+        "      // 6. TELEGRAM BOT 24/7 CLOUD WEBHOOK",
         "      if (action === 'telegram_webhook') {",
         "        if (postBody && typeof postBody.update_id === 'number') {",
         "          const updKey = 'tg_upd_' + String(postBody.update_id);",
-        "          if (cache.get(updKey)) {",
-        "            return jsonOut_({ status: 'ignored', reason: 'Duplicate Telegram update_id' });",
-        "          }",
+        "          if (cache.get(updKey)) return jsonOut_({ status: 'ignored', reason: 'Duplicate Telegram update_id' });",
         "          cache.put(updKey, '1', 3600);",
         "        }",
         "        const msg = (postBody && (postBody.message || postBody.channel_post || postBody.edited_message || postBody.edited_channel_post)) || null;",
@@ -4278,7 +4398,7 @@
         "        return jsonOut_({ status: 'ok', handled: 'telegram_webhook' });",
         "      }",
         "",
-        "      // 6. CLOUD BACKUP SNAPSHOT (Google Sheet Tab + Resilient Google Drive JSON)",
+        "      // 7. CLOUD BACKUP SNAPSHOT",
         "      if (action === 'backup_snapshot') {",
         "        const backupInfo = performCloudBackupSnapshot_(targetSheetId, targetSheetName);",
         "        return jsonOut_(Object.assign({ status: 'success' }, backupInfo));",
@@ -4294,7 +4414,7 @@
         "}",
         "",
         "// ===========================================================================",
-        "// 1-SECOND REAL-TIME GMAIL CLOUD WORKER (SAVES ONLY 1 LATEST NEW EMAIL)",
+        "// REAL-TIME GMAIL CLOUD WORKER (QUOTA-SAFE & SAVES ONLY 1 LATEST NEW EMAIL)",
         "// ===========================================================================",
         "function scanGmailAbaAlerts() {",
         "  const props = PropertiesService.getScriptProperties();",
@@ -4303,68 +4423,81 @@
         "  const runId = String(Date.now()) + '_' + Math.random().toString(36).slice(2, 6);",
         "  try { cache.put('ABA_GMAIL_WORKER_ID', runId, 120); } catch (e) {}",
         "",
-        "  let baselineMs = Number(props.getProperty('ABA_GMAIL_BASELINE_MS') || 0);",
-        "  if (!baselineMs) {",
-        "    baselineMs = Date.now() - 60000;",
-        "    props.setProperty('ABA_GMAIL_BASELINE_MS', String(baselineMs));",
-        "  }",
-        "",
-        "  let label = GmailApp.getUserLabelByName('ABA_Synced');",
-        "  if (!label) label = GmailApp.createLabel('ABA_Synced');",
-        "",
         "  const startLoopMs = Date.now();",
-        "  while (Date.now() - startLoopMs < 55000) {",
-        "    try {",
-        "      const activeWorker = cache.get('ABA_GMAIL_WORKER_ID');",
-        "      if (activeWorker && activeWorker !== runId) break;",
+        "  while (Date.now() - startLoopMs < 54000) {",
+        "    const activeWorker = cache.get('ABA_GMAIL_WORKER_ID');",
+        "    if (activeWorker && activeWorker !== runId) break;",
+        "    const res = runGmailScanCycle_(props, cache, activeSsId, false);",
+        "    if (res && res.fatalError) break;",
+        "    Utilities.sleep(2500);",
+        "  }",
+        "}",
         "",
-        "      const lastProcessedMs = Number(props.getProperty('ABA_LAST_MSG_MS') || baselineMs);",
-        "      const threads = GmailApp.search(",
-        "        '(from:ababank.com OR from:payway OR \"PayWay by ABA\" OR \"ABA KHQR\" OR \"ABA PAY\") -label:ABA_Synced newer_than:1d',",
-        "        0,",
-        "        5",
-        "      );",
+        "function runGmailScanCycle_(props, cache, activeSsId, ignoreBaseline) {",
+        "  try {",
+        "    let baselineMs = Number(props.getProperty('ABA_GMAIL_BASELINE_MS') || 0);",
+        "    if (!baselineMs) {",
+        "      baselineMs = Date.now() - 300000;",
+        "      props.setProperty('ABA_GMAIL_BASELINE_MS', String(baselineMs));",
+        "    }",
+        "    const lastProcessedMs = ignoreBaseline ? (Date.now() - 86400000) : Number(props.getProperty('ABA_LAST_MSG_MS') || baselineMs);",
         "",
-        "      if (threads && threads.length > 0) {",
-        "        let latestMsg = null;",
-        "        let latestMsgTime = lastProcessedMs;",
-        "        for (let i = 0; i < threads.length; i++) {",
-        "          const msgs = threads[i].getMessages();",
-        "          for (let j = 0; j < msgs.length; j++) {",
-        "            const msgTime = msgs[j].getDate().getTime();",
-        "            if (msgTime > latestMsgTime) {",
-        "              latestMsgTime = msgTime;",
-        "              latestMsg = msgs[j];",
-        "            }",
-        "          }",
-        "          threads[i].addLabel(label);",
-        "        }",
+        "    const threads = GmailApp.getInboxThreads(0, 6);",
+        "    let latestMsg = null;",
+        "    let latestMsgTime = lastProcessedMs;",
         "",
-        "        if (latestMsg) {",
-        "          const body = (latestMsg.getSubject() || '') + ' ' + (latestMsg.getPlainBody() || '');",
-        "          const parsed = parsePayWayMessage_(body, 'gm_' + latestMsg.getId());",
-        "          if (parsed) {",
-        "            const lock = LockService.getScriptLock();",
-        "            if (lock.tryLock(5000)) {",
-        "              try {",
-        "                const sheet = getSheet_(activeSsId, SHEET_NAME);",
-        "                ensureHeaders_(sheet);",
-        "                upsertRecordFast_(sheet, parsed);",
-        "                resequenceRowNumbers_(sheet);",
-        "                SpreadsheetApp.flush();",
-        "                invalidateAndRefreshCache_(cache, 'ver_' + activeSsId + '_' + SHEET_NAME, 'dat_' + activeSsId + '_' + SHEET_NAME, sheet);",
-        "                props.setProperty('ABA_LAST_MSG_MS', String(latestMsgTime));",
-        "              } finally {",
-        "                lock.releaseLock();",
-        "              }",
-        "            }",
-        "          }",
+        "    for (let i = 0; i < threads.length; i++) {",
+        "      const msgs = threads[i].getMessages();",
+        "      for (let j = 0; j < msgs.length; j++) {",
+        "        const msg = msgs[j];",
+        "        const msgTime = msg.getDate().getTime();",
+        "        if (msgTime <= latestMsgTime) continue;",
+        "        const fromStr = String(msg.getFrom() || '').toLowerCase();",
+        "        const subjStr = String(msg.getSubject() || '');",
+        "        const rawPlain = String(msg.getPlainBody() || '').trim();",
+        "        const rawHtmlStripped = String(msg.getBody() || '').replace(/<style[\\s\\S]*?<\\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/\\s+/g, ' ').trim();",
+        "        const combined = subjStr + ' ' + (rawPlain || rawHtmlStripped);",
+        "        const looksLikeAba = fromStr.indexOf('aba') !== -1 || fromStr.indexOf('payway') !== -1 || /aba|payway|khqr|paid\\s+by/i.test(combined);",
+        "        if (looksLikeAba) {",
+        "          latestMsgTime = msgTime;",
+        "          latestMsg = { msg: msg, combinedText: combined, msgDate: msg.getDate() };",
         "        }",
         "      }",
-        "    } catch (err) {",
-        "      break;",
         "    }",
-        "    Utilities.sleep(1000);",
+        "",
+        "    props.setProperty('ABA_GMAIL_LAST_RUN', Utilities.formatDate(new Date(), 'Asia/Phnom_Penh', 'dd/MM/yyyy HH:mm:ss'));",
+        "    props.deleteProperty('ABA_GMAIL_LAST_ERROR');",
+        "",
+        "    if (!latestMsg) {",
+        "      return { savedRecord: null, message: 'No new ABA email after ' + new Date(lastProcessedMs).toLocaleTimeString() };",
+        "    }",
+        "",
+        "    const parsed = parsePayWayMessage_(latestMsg.combinedText, 'gm_' + latestMsg.msg.getId());",
+        "    if (!parsed) {",
+        "      props.setProperty('ABA_LAST_MSG_MS', String(latestMsgTime));",
+        "      return { savedRecord: null, message: 'ABA email found but no amount detected: ' + latestMsg.combinedText.slice(0, 80) };",
+        "    }",
+        "",
+        "    parsed.timestamp = Utilities.formatDate(latestMsg.msgDate || new Date(), 'Asia/Phnom_Penh', 'dd/MM/yyyy HH:mm:ss');",
+        "    const lock = LockService.getScriptLock();",
+        "    if (lock.tryLock(8000)) {",
+        "      try {",
+        "        const sheet = getSheet_(activeSsId, SHEET_NAME);",
+        "        ensureHeaders_(sheet);",
+        "        upsertRecordFast_(sheet, parsed);",
+        "        resequenceRowNumbers_(sheet);",
+        "        SpreadsheetApp.flush();",
+        "        invalidateAndRefreshCache_(cache, 'ver_' + activeSsId + '_' + SHEET_NAME, 'dat_' + activeSsId + '_' + SHEET_NAME, sheet);",
+        "        props.setProperty('ABA_LAST_MSG_MS', String(latestMsgTime));",
+        "      } finally {",
+        "        lock.releaseLock();",
+        "      }",
+        "    }",
+        "    return { savedRecord: parsed, message: 'Saved latest ABA email to Sheet1!' };",
+        "  } catch (err) {",
+        "    const errStr = String(err && err.message ? err.message : err);",
+        "    try { props.setProperty('ABA_GMAIL_LAST_ERROR', errStr); } catch (e2) {}",
+        "    return { fatalError: true, savedRecord: null, message: errStr };",
         "  }",
         "}",
         "",
@@ -4373,14 +4506,20 @@
         "  const nowMs = Date.now();",
         "  props.setProperty('ABA_GMAIL_BASELINE_MS', String(nowMs));",
         "  props.setProperty('ABA_LAST_MSG_MS', String(nowMs));",
-        "  let label = GmailApp.getUserLabelByName('ABA_Synced');",
-        "  if (!label) label = GmailApp.createLabel('ABA_Synced');",
-        "  const oldThreads = GmailApp.search('(from:ababank.com OR from:payway OR \"PayWay by ABA\" OR \"ABA KHQR\" OR \"ABA PAY\") -label:ABA_Synced newer_than:2d', 0, 50);",
-        "  for (let i = 0; i < oldThreads.length; i++) oldThreads[i].addLabel(label);",
+        "  props.deleteProperty('ABA_GMAIL_LAST_ERROR');",
+        "  GmailApp.getInboxThreads(0, 1);",
         "  ScriptApp.getProjectTriggers().forEach(function(t) {",
         "    if (t.getHandlerFunction() === 'scanGmailAbaAlerts') ScriptApp.deleteTrigger(t);",
         "  });",
         "  ScriptApp.newTrigger('scanGmailAbaAlerts').timeBased().everyMinutes(1).create();",
+        "}",
+        "",
+        "function testGmailParserNow() {",
+        "  const props = PropertiesService.getScriptProperties();",
+        "  const cache = CacheService.getScriptCache();",
+        "  const res = runGmailScanCycle_(props, cache, getActiveSpreadsheetId_(''), true);",
+        "  Logger.log(JSON.stringify(res));",
+        "  return res;",
         "}",
         "",
         "function stopAbaEmailTrigger() {",
@@ -4391,7 +4530,7 @@
         "}",
         "",
         "// ===========================================================================",
-        "// SCHEDULED CLOUD BACKUP (Google Sheet Tab + Resilient Google Drive JSON)",
+        "// SCHEDULED CLOUD BACKUP",
         "// ===========================================================================",
         "function runScheduledCloudBackup() {",
         "  performCloudBackupSnapshot_(getActiveSpreadsheetId_(''), SHEET_NAME);",
@@ -4409,7 +4548,6 @@
         "  const sourceSheet = ss.getSheetByName(sourceSheetName || SHEET_NAME) || ss.insertSheet(sourceSheetName || SHEET_NAME);",
         "  ensureHeaders_(sourceSheet);",
         "  const records = readAllRecords_(sourceSheet);",
-        "",
         "  let backupSheet = ss.getSheetByName(BACKUP_TAB_NAME);",
         "  if (!backupSheet) backupSheet = ss.insertSheet(BACKUP_TAB_NAME);",
         "  backupSheet.clearContents();",
@@ -4418,10 +4556,7 @@
         "    const allVals = sourceSheet.getRange(1, 1, trueLastRow, 8).getValues();",
         "    backupSheet.getRange(1, 1, allVals.length, 8).setValues(allVals);",
         "  }",
-        "",
-        "  let driveFileName = '';",
-        "  let driveFileId = '';",
-        "  let driveNote = '';",
+        "  let driveFileName = '', driveFileId = '', driveNote = '';",
         "  try {",
         "    const folders = DriveApp.getFoldersByName(BACKUP_FOLDER_NAME);",
         "    const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(BACKUP_FOLDER_NAME);",
@@ -4437,7 +4572,7 @@
         "}",
         "",
         "// ===========================================================================",
-        "// HELPERS: PAYWAY PARSER, CHUNKED CACHE, BLANK-ROW SAFE SHEET OPS",
+        "// HELPERS: PAYWAY PARSER, CHUNKED CACHE, SHEET CRUD",
         "// ===========================================================================",
         "function toAsciiDigits_(str) {",
         "  const kh = '០១២៣៤៥៦៧៨៩';",
@@ -4452,7 +4587,7 @@
         "}",
         "",
         "function parsePayWayMessage_(rawText, fallbackId) {",
-        "  const raw = String(rawText || '').replace(/\\r/g, '').trim();",
+        "  const raw = String(rawText || '').replace(/\\r/g, ' ').replace(/\\s+/g, ' ').trim();",
         "  if (!raw) return null;",
         "  const text = toAsciiDigits_(raw);",
         "  let currency = null;",
@@ -4470,8 +4605,8 @@
         "",
         "  let payerName = 'ភ្ញៀវ PayWay ABA';",
         "  const p1 = text.match(/paid\\s+by\\s+([^\\n\\r(]+?)\\s*\\(/i);",
-        "  const p2 = text.match(/paid\\s+by\\s+([^\\n\\r(]+?)(?=\\s+(?:on|via|at|to|into)\\b|\\.|,|\\n|\\r|$)/i);",
-        "  const p3 = text.match(/(?:received\\s+from|payer|customer|sender|ពី)\\s*[:\\-៖]?\\s*([^\\n\\r(]+?)(?=\\s+(?:តាមរយៈ|via|on|at)\\b|\\.|,|\\n|\\r|$)/i);",
+        "  const p2 = text.match(/paid\\s+by\\s+([^\\n\\r(]+?)(?=\\s+(?:on|via|at|to|into)\\b|\\.|,|$)/i);",
+        "  const p3 = text.match(/(?:received\\s+from|payer|customer|sender|from|ពី)\\s*[:\\-៖]?\\s*([^\\n\\r(]+?)(?=\\s+(?:តាមរយៈ|via|on|at|account|amount|trx|tran|ref)\\b|\\.|,|$)/i);",
         "  if (p1 && p1[1]) payerName = p1[1].trim();",
         "  else if (p2 && p2[1]) payerName = p2[1].trim();",
         "  else if (p3 && p3[1]) payerName = p3[1].trim();",
@@ -4524,9 +4659,7 @@
         "      combined += map[keys[i]];",
         "    }",
         "    return JSON.parse(combined);",
-        "  } catch (e) {",
-        "    return null;",
-        "  }",
+        "  } catch (e) { return null; }",
         "}",
         "",
         "function invalidateAndRefreshCache_(cache, verKey, dataKey, sheet) {",
@@ -4557,12 +4690,7 @@
         "  const vals = sheet.getRange(2, 2, lastRow - 1, 7).getValues();",
         "  for (let i = vals.length - 1; i >= 0; i--) {",
         "    const row = vals[i];",
-        "    if (",
-        "      String(row[0] || '').trim() !== '' ||",
-        "      parseNumberCell_(row[1]) > 0 ||",
-        "      parseNumberCell_(row[2]) > 0 ||",
-        "      String(row[6] || '').trim() !== ''",
-        "    ) {",
+        "    if (String(row[0] || '').trim() !== '' || parseNumberCell_(row[1]) > 0 || parseNumberCell_(row[2]) > 0 || String(row[6] || '').trim() !== '') {",
         "      return i + 2;",
         "    }",
         "  }",
@@ -4583,28 +4711,14 @@
         "    let id = String(r[7] || '').trim();",
         "    if (!name && usd <= 0 && khr <= 0 && !id) continue;",
         "    const isKhr = (khr > 0 && usd === 0) || (khr > usd && usd === 0);",
-        "    if (!id) {",
-        "      id = 'sheet_' + Date.now() + '_' + (idx + 2);",
-        "      r[7] = id;",
-        "      needsIdBackfill = true;",
-        "    }",
+        "    if (!id) { id = 'sheet_' + Date.now() + '_' + (idx + 2); r[7] = id; needsIdBackfill = true; }",
         "    let tsStr = '';",
         "    if (r[6] instanceof Date && !isNaN(r[6].getTime())) {",
         "      tsStr = Utilities.formatDate(r[6], 'Asia/Phnom_Penh', 'dd/MM/yyyy HH:mm:ss');",
         "    } else {",
         "      tsStr = String(r[6] || '').replace(/^'+/, '').trim();",
         "    }",
-        "    records.push({",
-        "      name: name,",
-        "      usd: usd,",
-        "      khr: khr,",
-        "      currency: isKhr ? 'KHR' : 'USD',",
-        "      amount: isKhr ? khr : usd,",
-        "      method: String(r[4] || 'សាច់ប្រាក់').trim() || 'សាច់ប្រាក់',",
-        "      note: String(r[5] || '').trim(),",
-        "      timestamp: tsStr,",
-        "      id: id",
-        "    });",
+        "    records.push({ name: name, usd: usd, khr: khr, currency: isKhr ? 'KHR' : 'USD', amount: isKhr ? khr : usd, method: String(r[4] || 'សាច់ប្រាក់').trim() || 'សាច់ប្រាក់', note: String(r[5] || '').trim(), timestamp: tsStr, id: id });",
         "  }",
         "  if (needsIdBackfill) {",
         "    const idCol = vals.map(function(r) { return [r[7] || '']; });",
@@ -4630,10 +4744,7 @@
         "  if (trueLastRow >= 2 && id) {",
         "    const ids = sheet.getRange(2, 8, trueLastRow - 1, 1).getValues();",
         "    for (let i = 0; i < ids.length; i++) {",
-        "      if (String(ids[i][0]).trim() === id) {",
-        "        sheet.getRange(i + 2, 1, 1, 8).setValues([rowVals]);",
-        "        return;",
-        "      }",
+        "      if (String(ids[i][0]).trim() === id) { sheet.getRange(i + 2, 1, 1, 8).setValues([rowVals]); return; }",
         "    }",
         "  }",
         "  sheet.getRange(trueLastRow + 1, 1, 1, 8).setValues([rowVals]);",
@@ -4645,10 +4756,7 @@
         "  const idToRow = {};",
         "  if (trueLastRow >= 2) {",
         "    const ids = sheet.getRange(2, 8, trueLastRow - 1, 1).getValues();",
-        "    for (let i = 0; i < ids.length; i++) {",
-        "      const k = String(ids[i][0] || '').trim();",
-        "      if (k) idToRow[k] = i + 2;",
-        "    }",
+        "    for (let i = 0; i < ids.length; i++) { const k = String(ids[i][0] || '').trim(); if (k) idToRow[k] = i + 2; }",
         "  }",
         "  const seenBatchIndex = {};",
         "  const rowsToAppend = [];",
@@ -4656,29 +4764,18 @@
         "    if (!rec) return;",
         "    const id = String(rec.id || '').trim();",
         "    const rowVals = buildRowValues_(rec);",
-        "    if (id && idToRow[id]) {",
-        "      sheet.getRange(idToRow[id], 1, 1, 8).setValues([rowVals]);",
-        "    } else if (id && seenBatchIndex[id] !== undefined) {",
-        "      rowsToAppend[seenBatchIndex[id]] = rowVals;",
-        "    } else {",
-        "      if (id) seenBatchIndex[id] = rowsToAppend.length;",
-        "      rowsToAppend.push(rowVals);",
-        "    }",
+        "    if (id && idToRow[id]) { sheet.getRange(idToRow[id], 1, 1, 8).setValues([rowVals]); }",
+        "    else if (id && seenBatchIndex[id] !== undefined) { rowsToAppend[seenBatchIndex[id]] = rowVals; }",
+        "    else { if (id) seenBatchIndex[id] = rowsToAppend.length; rowsToAppend.push(rowVals); }",
         "  });",
-        "  if (rowsToAppend.length > 0) {",
-        "    sheet.getRange(trueLastRow + 1, 1, rowsToAppend.length, 8).setValues(rowsToAppend);",
-        "  }",
+        "  if (rowsToAppend.length > 0) sheet.getRange(trueLastRow + 1, 1, rowsToAppend.length, 8).setValues(rowsToAppend);",
         "}",
         "",
         "function deleteRecordByIdFast_(sheet, delId) {",
         "  const trueLastRow = getTrueLastDataRow_(sheet);",
         "  if (trueLastRow < 2 || !delId) return;",
         "  const ids = sheet.getRange(2, 8, trueLastRow - 1, 1).getValues();",
-        "  for (let i = ids.length - 1; i >= 0; i--) {",
-        "    if (String(ids[i][0]).trim() === delId) {",
-        "      sheet.deleteRow(i + 2);",
-        "    }",
-        "  }",
+        "  for (let i = ids.length - 1; i >= 0; i--) { if (String(ids[i][0]).trim() === delId) sheet.deleteRow(i + 2); }",
         "}",
         "",
         "function resequenceRowNumbers_(sheet) {",
@@ -5184,9 +5281,11 @@
       const rawTs = raw.timestamp || raw['ម៉ោងកត់ត្រា'] || '';
       const displayTs = normalizeTimestampDisplay(rawTs);
       const parsedMs = parseTimestampToMs(displayTs || rawTs);
+      const rawName = String(raw.name || raw['ឈ្មោះអ្នកចូលរួម'] || raw['ឈ្មោះភ្ញៀវ'] || '').trim();
+      const deterministicFallbackId = `row_${idx || 0}_${rawName}_${amount}_${currency}_${displayTs}`.replace(/\s+/g, '_');
       return {
-        id: String(raw.id || raw.ID || '').trim() || `rec_${Date.now()}_${idx || 0}_${Math.random().toString(36).slice(2, 6)}`,
-        name: String(raw.name || raw['ឈ្មោះអ្នកចូលរួម'] || raw['ឈ្មោះភ្ញៀវ'] || '').trim(),
+        id: String(raw.id || raw.ID || '').trim() || deterministicFallbackId,
+        name: rawName,
         method: String(raw.method || raw['ប្រតិបត្តិការ'] || 'សាច់ប្រាក់').trim() || 'សាច់ប្រាក់',
         currency,
         amount,
